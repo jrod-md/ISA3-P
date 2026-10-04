@@ -24,7 +24,7 @@ $title = 'Dashboard'; $active = 'dashboard'; require __DIR__ . '/includes/header
     </tbody></table></div><?php endif; ?>
 </section>
 <section class="forms-section">
-    <div class="section-heading"><div><h2>Resumen de Formularios</h2><p class="muted">El recorrido del proyecto, un formulario a la vez.</p></div><a class="text-link" href="<?= e(url('/formularios')) ?>">5 de 10 disponibles →</a></div>
+    <div class="section-heading"><div><h2>Resumen de Formularios</h2><p class="muted">El recorrido del proyecto, un formulario a la vez.</p></div><a class="text-link" href="<?= e(url('/formularios')) ?>">6 de 10 disponibles →</a></div>
     <div class="form-summary">
     <?php require __DIR__ . '/includes/form_summary.php'; ?>
     </div>

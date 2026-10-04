@@ -129,6 +129,11 @@ try {
     if (!is_resource($coverageTest)) { throw new RuntimeException('Cannot start coverage HTTP tests'); }
     fclose($coveragePipes[0]);
     if (proc_close($coverageTest) !== 0) { throw new RuntimeException('Coverage HTTP tests failed'); }
+    $planTest = proc_open([PHP_BINARY, PROJECT_ROOT . '/tests/smoke-test-plan.php', 'http://127.0.0.1:8000'],
+        [0 => ['pipe', 'r'], 1 => STDOUT, 2 => STDERR], $planPipes, PROJECT_ROOT);
+    if (!is_resource($planTest)) { throw new RuntimeException('Cannot start test plan HTTP tests'); }
+    fclose($planPipes[0]);
+    if (proc_close($planTest) !== 0) { throw new RuntimeException('Test plan HTTP tests failed'); }
     $result = search('q=laptop&category=computers&max_price=900&provider=all&sort=price_asc');
     expect(count(array_filter($result['providers'], fn ($provider) => $provider['status'] === 'ok')) === 3 && $result['total'] > 0, 'All providers aggregated');
     expect(count(array_filter($result['results'], fn ($product) => isset($product['external_id'], $product['provider']))) === $result['total'], 'Normalized results');

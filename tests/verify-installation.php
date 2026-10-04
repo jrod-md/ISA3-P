@@ -23,10 +23,10 @@ try {
         if ((int) $pdo->query('SELECT COUNT(*) FROM `' . $schemas[$name] . '`.products')->fetchColumn() !== $expected) { throw new RuntimeException('Catálogo incorrecto: ' . $name); }
     }
     $pdo->exec('USE `' . $schemas['bus_meta'] . '`');
-    foreach (['formularios_prueba', 'equivalencia_filas', 'limite_filas', 'decision_reglas', 'decision_elementos', 'decision_valores', 'cobertura_metricas'] as $table) {
+    foreach (['formularios_prueba', 'equivalencia_filas', 'limite_filas', 'decision_reglas', 'decision_elementos', 'decision_valores', 'cobertura_metricas', 'planes_prueba', 'plan_cronograma'] as $table) {
         $check = $pdo->prepare('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name = ?');
         $check->execute([$schemas['bus_meta'], $table]);
-        if ((int) $check->fetchColumn() !== 1) { throw new RuntimeException('Falta tabla de Formularios 2–5: ' . $table); }
+        if ((int) $check->fetchColumn() !== 1) { throw new RuntimeException('Falta tabla de Formularios 2–6: ' . $table); }
     }
     if ((int) $pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn() !== 2 || (int) $pdo->query('SELECT COUNT(*) FROM casos_prueba')->fetchColumn() !== 0) { throw new RuntimeException('Instalación inicial incorrecta'); }
     foreach (['admin' => 'demo-isa3-2026', 'tester' => 'Tester123!'] as $username => $password) {
@@ -45,10 +45,16 @@ try {
     $insert = $pdo->prepare('INSERT INTO cobertura_metricas (formulario_id,metrica,total,cubiertos,porcentaje,herramienta,orden) VALUES (?,?,3,1,33.33,?,?)');
     foreach (array_keys(Marketplace\Bus\Repository\CoverageMetrics::METRICS) as $order => $metric) { $insert->execute([$coverageId, $metric, 'Manual', $order]); }
     $coverageBefore = $pdo->query('SELECT * FROM cobertura_metricas ORDER BY id')->fetchAll();
+    $pdo->exec("INSERT INTO planes_prueba (usuario_id,nombre_proyecto,version,responsable,fecha,alcance,objetivos,estrategia,recursos,criterios_aceptacion,riesgos) SELECT id,'Marketplace Search Bus','1.0','Responsable académico','2026-10-04','Alcance','Objetivos','Estrategia','Recursos','Aceptación','Riesgos' FROM usuarios WHERE username = 'tester'");
+    $planId = (int) $pdo->lastInsertId();
+    $pdo->exec("INSERT INTO plan_cronograma (plan_id,actividad,fecha_inicio,fecha_fin,orden) VALUES ({$planId},'Diseño','2026-10-05','2026-10-07',0)");
+    $planBefore = $pdo->query('SELECT * FROM planes_prueba ORDER BY id')->fetchAll();
+    $scheduleBefore = $pdo->query('SELECT * FROM plan_cronograma ORDER BY id')->fetchAll();
     $pdo->exec($sql);
     $pdo->exec('USE `' . $schemas['bus_meta'] . '`');
     if ((int) $pdo->query('SELECT COUNT(*) FROM equivalencia_filas WHERE formulario_id = ' . $documentId)->fetchColumn() !== 1) { throw new RuntimeException('Reimportación alteró documentación de Caja Negra'); }
     if ($pdo->query('SELECT * FROM cobertura_metricas ORDER BY id')->fetchAll() !== $coverageBefore) { throw new RuntimeException('Reimportación alteró métricas de Caja Blanca'); }
+    if ($pdo->query('SELECT * FROM planes_prueba ORDER BY id')->fetchAll() !== $planBefore || $pdo->query('SELECT * FROM plan_cronograma ORDER BY id')->fetchAll() !== $scheduleBefore) { throw new RuntimeException('Reimportación alteró planes o cronograma'); }
     if ((int) $pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn() !== 2 || (int) $pdo->query('SELECT COUNT(*) FROM search_sessions')->fetchColumn() !== 1 || $pdo->query("SELECT nombre FROM usuarios WHERE username = 'tester'")->fetchColumn() !== 'Nombre conservado') { throw new RuntimeException('La reimportación alteró datos existentes'); }
     $constraints = $pdo->prepare("SELECT COUNT(*) FROM information_schema.referential_constraints WHERE constraint_schema = ? AND constraint_name IN ('fk_search_cache_session', 'fk_casos_usuario')");
     $constraints->execute([$schemas['bus_meta']]);

@@ -13,6 +13,8 @@ flowchart TD
     QA[Aplicación PHP / módulo QA] --> Meta
     Meta --> U[usuarios]
     Meta --> C[casos_prueba]
+    Meta --> P[planes_prueba: proyecto, versión y creador]
+    P --> PC[plan_cronograma: actividades y fechas]
     C --> F[formularios_prueba: caso y autor]
     F --> E[equivalencia_filas / limite_filas]
     F --> D[decision_reglas / decision_elementos / decision_valores]
@@ -28,6 +30,8 @@ El Proyecto 2 extiende el router, la autenticación y la navegación del Proyect
 
 `usuarios` incorpora Administrador y Tester con contraseñas hash. `casos_prueba` referencia al autor; los permisos se comprueban en el servidor. El Administrador puede consultar y eliminar todos los casos; el Tester consulta y edita los propios. Las evidencias están en `.runtime/evidence`, fuera de Git y del acceso estático, y sus metadatos en MySQL. Las sesiones PHP se guardan en `.runtime/sessions`.
 
-Las bases se extienden mediante SQL aditivo. Los datos de casos no expiran con las búsquedas. Los Formularios 2–5 guardan documentación relacional vinculada al Formulario 1 y a su creador, con permisos comprobados por documento. El Formulario 5 calcula porcentajes a partir de conteos ingresados por el tester; no importa datos automáticamente de herramientas externas. Los Formularios 6–10 continúan pendientes. Consulta [las relaciones de Caja Negra](formularios-caja-negra.md) y [cobertura de Caja Blanca](formulario-cobertura.md); la documentación UML complementaria se encuentra en `docs/uml/`.
+Las bases se extienden mediante SQL aditivo. Los datos de casos no expiran con las búsquedas. Los Formularios 2–5 guardan documentación relacional vinculada al Formulario 1 y a su creador, con permisos comprobados por documento. El Formulario 5 calcula porcentajes a partir de conteos ingresados por el tester; no importa datos automáticamente de herramientas externas.
+
+El Formulario 6 utiliza `planes_prueba` y `plan_cronograma`: es un documento a nivel proyecto, sin `caso_id` ni vínculo con `formularios_prueba`. Conserva un creador y un Responsable académico por separado y permite varios planes/versiones. Se sirve desde `/formularios/plan`. Los Formularios 7–10 continúan pendientes. Consulta [Caja Negra](formularios-caja-negra.md), [cobertura](formulario-cobertura.md) y [plan del proyecto](plan-pruebas.md); la documentación UML complementaria se encuentra en `docs/uml/`.
 
 Localmente XAMPP controla Apache y MySQL. Los scripts `start-dev.ps1` y `stop-dev.ps1` controlan exclusivamente PHP propio. CI usa MariaDB efímera y procesos PHP controlados por `tests/smoke-bus.php`, sin despliegue ni dependencia del entorno local.

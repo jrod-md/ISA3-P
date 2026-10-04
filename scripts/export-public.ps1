@@ -40,4 +40,4 @@ foreach ($file in $candidates) {
     $count++
 }
 Write-Host "Exportacion publica verificada: $count archivos en $destination"
-Write-Host 'Sin .git ni historial previo. Revisa OWNER en README antes del primer commit.'
+Write-Host 'Sin .git ni historial previo. Repositorio publico: jrod-md/ISA3-P.'

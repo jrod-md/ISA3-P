@@ -89,7 +89,7 @@ La suite QA completa se ejecuta localmente sobre Apache. El Bus portable se prue
 
 ## Herramientas de pruebas
 
-PHPUnit prueba unidades reales del proyecto; Xdebug genera cobertura de los archivos seleccionados, con informes Clover/HTML y artefactos en CI. El proyecto Selenium IDE incluye un recorrido Tester ejecutado con Side Runner. JMeter tiene un plan pequeño validado, pendiente de ejecución con Java/JMeter local. No se utiliza TestCover. [Instalación, comandos, alcance y evidencias](docs/testing-tools.md).
+PHPUnit prueba unidades reales del proyecto; Xdebug genera cobertura de los archivos seleccionados, con informes Clover/HTML y artefactos en CI. El proyecto Selenium IDE incluye un recorrido Tester ejecutado con Side Runner. JMeter ejecuta en GitHub Actions una prueba académica ligera del Bus: 45 muestras con assertions HTTP/JSON y artefacto de resultados. No se utiliza TestCover. [Instalación, comandos, alcance y evidencias](docs/testing-tools.md).
 
 ```powershell
 composer install

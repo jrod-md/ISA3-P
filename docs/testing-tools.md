@@ -9,10 +9,10 @@ La aplicación y sus Formularios 1–10 conservan su comportamiento. Esta capa a
 | PHPUnit 11.5.56 | Composer, lockfile y `phpunit.xml.dist` | 99 tests, 172 assertions, sin fallos | Sí |
 | Xdebug 3.5.3 + PHPUnit | Clover, HTML y consola | 219/295 líneas, 74,24 % del alcance seleccionado | Sí; Xdebug mediante setup-php |
 | Selenium IDE | Proyecto `.side` importable y configuración CLI para Edge | Un flujo aprobado con Selenium Side Runner 4.0.13 y Edge; no se ejecutó mediante la extensión IDE | No; ejecución local opcional |
-| Apache JMeter 5.6.3 | Plan `.jmx`, tres requests y assertions | Plan validado; ejecución real en CI pendiente de comprobación | Workflow configurado con Java Temurin 17 |
+| Apache JMeter 5.6.3 | Plan `.jmx`, tres requests y assertions | Implementado y ejecutado en GitHub Actions: 45 muestras, 45 exitosas, 0 fallidas | Sí; Java Temurin 17 |
 | PCOV / TestCover | No integrados | No utilizados | No |
 
-Los recuentos y la cobertura anteriores corresponden a la ejecución local de esta entrega. Para una revisión posterior, consulta los resultados de su propia ejecución; no son un umbral obligatorio ni una medición de rendimiento de la aplicación.
+Los recuentos de PHPUnit y la cobertura corresponden a la ejecución local de esta entrega; JMeter corresponde al run de CI enlazado más abajo. Para una revisión posterior, consulta los resultados de su propia ejecución; no son un umbral obligatorio ni una medición general de rendimiento de la aplicación.
 
 ## PHPUnit: unidades reales
 
@@ -122,7 +122,9 @@ Plan: `tests/jmeter/isa3-bus.jmx`, formato de Apache JMeter 5.6.3. Tiene **5 usu
 
 Hay timeouts de conexión/respuesta y assertions de respuesta y JSONPath. No hay login, solicitudes de escritura académica ni listeners pesados. No es un benchmark representativo de producción; el servidor PHP local y esta carga pequeña limitan las conclusiones. Las búsquedas generan datos temporales que limpia el worker.
 
-La ejecución real en GitHub Actions está configurada y pendiente de comprobación. El runner Linux obtiene **Java Temurin 17.0.20+101** mediante `actions/setup-java@v6` y descarga **Apache JMeter 5.6.3**, verificando su SHA-512 antes de descomprimirlo en el directorio temporal del runner. No requiere instalar Java/JMeter en Windows.
+**Implementado y ejecutado en GitHub Actions.** El [run 37242427326](https://github.com/jrod-md/ISA3-P/actions/runs/37242427326) terminó exitosamente: **45 muestras, 45 exitosas, 0 fallidas, 0 % de error, promedio 23,2222 ms y throughput 10,7117 solicitudes/s**, calculados a partir del JTL. Hubo 15 muestras por endpoint. Estos valores pertenecen a esa ejecución; los siguientes runs pueden tener tiempos distintos.
+
+El runner Linux obtiene Java mediante `actions/setup-java@v6`, con distribución **Temurin** y versión fijada **17.0.20+101**; `java -version` confirmó **OpenJDK 17.0.20.1+1**. Descarga **Apache JMeter 5.6.3**, verificando su SHA-512 antes de descomprimirlo en el directorio temporal del runner. No requiere instalar Java/JMeter en Windows.
 
 Después de la instalación de las bases y la suite portátil, `tests/jmeter/run_ci.py` comprueba que los puertos están libres, inicia sus propios procesos del Bus y los tres proveedores, verifica `/health` y ejecuta el plan en modo headless. Detiene únicamente sus procesos al terminar. La suite portátil ya detiene los suyos, por lo que no se duplican servicios.
 

@@ -1,0 +1,37 @@
+@startuml
+title Componentes - Bus de Web Services
+skinparam componentStyle rectangle
+
+actor Browser
+component "Marketplace Search UI" as SearchUI
+component "Admin UI" as AdminUI
+component "Search Bus API\n:8000" as Bus
+component "SearchOrchestrator" as Orchestrator
+component "Provider adapters" as Adapters
+component "Search persistence" as Persistence
+component "Cleanup worker" as Worker
+component "Provider Alpha API\n:8101" as Alpha
+component "Provider Beta API\n:8102" as Beta
+component "Provider Gamma API\n:8103" as Gamma
+database "bus_meta" as BusDB
+database "market_alpha" as AlphaDB
+database "market_beta" as BetaDB
+database "market_gamma" as GammaDB
+
+Browser --> SearchUI
+Browser --> AdminUI
+SearchUI --> Bus : HTTP/JSON
+AdminUI --> Bus : HTTP/JSON + sesión
+Bus --> Orchestrator
+Orchestrator --> Adapters
+Orchestrator --> Persistence
+Orchestrator --> Alpha : HTTP/JSON
+Orchestrator --> Beta : HTTP/JSON
+Orchestrator --> Gamma : HTTP/JSON
+Persistence --> BusDB : PDO/SQL
+Worker --> Persistence
+Alpha --> AlphaDB : PDO/SQL preparado
+Beta --> BetaDB : PDO/SQL preparado
+Gamma --> GammaDB : PDO/SQL preparado
+@enduml
+

@@ -1,0 +1,19 @@
+@startuml
+title Estados de SearchSession
+[*] --> Created : create()
+Created --> Active : persistir + agregar/cachear
+Active --> Expired : now >= expiresAt
+Expired --> Destroyed : cleanup worker / DELETE físico
+Active --> Destroyed : eliminación administrativa
+Created --> Destroyed : eliminación administrativa o limpieza
+Destroyed --> [*]
+
+note right of Active
+  La sesión y el snapshot existen
+  únicamente durante su TTL.
+end note
+note right of Destroyed
+  ON DELETE CASCADE elimina search_cache.
+end note
+@enduml
+

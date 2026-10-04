@@ -1,0 +1,56 @@
+# Local configuration (keep the reproducible template)
+.env
+.env.*
+!.env.example
+*.local.php
+
+# Runtime: sessions, private evidence, process records and generated files
+/.runtime/
+/docs/evidencias/
+/evidence/
+/evidencias/
+/sessions/
+/uploads/
+/logs/
+/tmp/
+/temp/
+*.log
+*.pid
+*.tmp
+*.temp
+*.cache
+*.bak
+*.old
+*.orig
+*.swp
+*.swo
+
+# Delivery archives, backups and database data (source SQL stays versioned)
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+/backup/
+/backups/
+/respaldos/
+/dumps/
+/data/
+*.ibd
+*.ibdata
+ibdata*
+ib_logfile*
+aria_log*
+*.sqlite
+*.sqlite3
+
+# IDE, OS and generated test reports
+/.idea/
+/.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+/.phpunit.cache/
+.phpunit.result.cache
+/coverage/
+/test-results/

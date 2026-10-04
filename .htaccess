@@ -1,0 +1,8 @@
+Options -Indexes
+RewriteEngine On
+RewriteRule ^assets/(.*)$ apps/bus/public/assets/$1 [L]
+RewriteRule ^apps/bus/public/assets/ - [L]
+RewriteRule ^apps/bus/public/index\.php$ - [L]
+RewriteRule ^(?:apps|services|shared|scripts|tests|sql|database|docs|\.runtime)(?:/|$) - [F,L]
+RewriteRule ^(?:bootstrap\.php|\.env(?:\.example)?|\.git) - [F,L]
+RewriteRule ^ apps/bus/public/index.php [L,QSA]

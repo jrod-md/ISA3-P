@@ -1,0 +1,30 @@
+@startuml
+title Secuencia - expiración y destrucción física
+autonumber
+participant "CleanupWorker\n(cleanup-worker.php)" as Worker
+control ExpirationService
+database PdoSearchRepository as Repo
+database "bus_meta.search_sessions" as Session
+database "bus_meta.search_cache" as Cache
+database MariaDB
+
+loop cada CLEANUP_INTERVAL_SECONDS (5 s por defecto)
+  Worker -> ExpirationService : cleanup()
+  ExpirationService -> Repo : deleteExpired()
+  Repo -> MariaDB : DELETE search_sessions\nWHERE expires_at <= UTC_TIMESTAMP(6)
+  MariaDB -> Session : elimina filas expiradas
+  Session -> Cache : ON DELETE CASCADE
+  destroy Cache
+  destroy Session
+  MariaDB --> Repo : cantidad de sesiones borradas
+  Repo --> ExpirationService : deletedCount
+  ExpirationService --> Worker : deletedCount
+  Worker -> Worker : imprime solo conteo operacional
+end
+
+note over Session, Cache
+  destroy representa DELETE físico en SQL.
+  El worker actúa sin una nueva petición del usuario.
+end note
+@enduml
+

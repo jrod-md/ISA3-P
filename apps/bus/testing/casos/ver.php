@@ -1,0 +1,11 @@
+<?php
+require dirname(__DIR__) . '/includes/bootstrap.php';
+$case = case_by_id(); $current = require_login();
+$title = code_case((int) $case['id']); $active = 'casos'; require TESTING_PATH . '/includes/header.php';
+?>
+<a class="back-link" href="<?= e(url('/casos')) ?>">← Volver a los casos</a>
+<div class="page-heading"><div><span class="eyebrow"><?= e(code_case((int) $case['id'])) ?> · FORMULARIO 01</span><h1><?= e($case['modulo']) ?></h1><p class="muted">Registrado por <?= e($case['tester']) ?> · <?= e(date_display($case['creado_en'])) ?></p></div><div class="heading-actions"><a class="button" href="<?= e(url('/casos/editar?id=' . $case['id'])) ?>">Editar caso</a><?php if ($current['rol'] === 'admin'): ?><a class="button-secondary danger-link" href="<?= e(url('/casos/eliminar?id=' . $case['id'])) ?>">Eliminar</a><?php endif; ?></div></div>
+<section class="panel detail-panel"><div class="detail-meta"><div><span class="tiny-label">ID DEL CASO</span><strong class="case-code"><?= e(code_case((int) $case['id'])) ?></strong></div><div><span class="tiny-label">TÉCNICA UTILIZADA</span><strong><?= e($case['tecnica']) ?></strong><span><?= e($case['subtecnica']) ?></span></div><div><span class="tiny-label">ESTADO</span><span class="badge <?= $case['estado'] === 'Éxito' ? 'badge-success' : 'badge-failure' ?>"><?= e($case['estado']) ?></span></div></div>
+<dl class="case-details"><?php foreach (['objetivo' => 'Objetivo', 'precondiciones' => 'Precondiciones', 'datos_entrada' => 'Datos de Entrada', 'pasos_ejecucion' => 'Pasos de Ejecución', 'resultado_esperado' => 'Resultado Esperado', 'resultado_obtenido' => 'Resultado Obtenido', 'observaciones' => 'Observaciones'] as $key => $label): ?><div><dt><?= e($label) ?></dt><dd><?= $case[$key] === '' ? '<span class="muted">Sin observaciones.</span>' : nl2br(e($case[$key])) ?></dd></div><?php endforeach; ?><div><dt>Evidencia</dt><dd><?php if ($case['evidencia_archivo']): ?><a class="text-link" href="<?= e(url('/casos/evidencia?id=' . $case['id'])) ?>">Descargar <?= e($case['evidencia_nombre']) ?> ↗</a><?php else: ?><span class="muted">Sin archivo adjunto.</span><?php endif; ?></dd></div></dl>
+<p class="muted last-update">Última actualización: <?= e(date_display($case['actualizado_en'])) ?></p></section>
+<?php require TESTING_PATH . '/includes/footer.php'; ?>

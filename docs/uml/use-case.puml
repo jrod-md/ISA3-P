@@ -1,0 +1,39 @@
+@startuml
+title Casos de uso - Marketplace Search Bus
+left to right direction
+skinparam packageStyle rectangle
+
+actor Usuario
+actor Administrador
+actor "Proveedor Web Service" as Proveedor
+
+rectangle "Marketplace Search Bus" {
+  usecase "Buscar productos" as UC1
+  usecase "Aplicar filtros dinámicos" as UC2
+  usecase "Consultar múltiples\nproveedores" as UC3
+  usecase "Visualizar resultados\nnormalizados" as UC4
+  usecase "Visualizar expiración" as UC5
+  usecase "Iniciar sesión de\nadministración" as UC6
+  usecase "Listar búsquedas\ntemporales" as UC7
+  usecase "Eliminar una búsqueda" as UC8
+  usecase "Eliminar búsquedas\nexpiradas" as UC9
+  usecase "Eliminar todas las\nbúsquedas" as UC10
+}
+
+Usuario --> UC1
+UC1 .> UC2 : <<include>>
+UC1 .> UC3 : <<include>>
+UC1 .> UC4 : <<include>>
+Usuario --> UC5
+Proveedor --> UC3
+Administrador --> UC6
+Administrador --> UC7
+Administrador --> UC8
+Administrador --> UC9
+Administrador --> UC10
+UC7 .> UC6 : <<include>>
+UC8 .> UC6 : <<include>>
+UC9 .> UC6 : <<include>>
+UC10 .> UC6 : <<include>>
+@enduml
+

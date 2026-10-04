@@ -1,0 +1,62 @@
+@startuml
+title Secuencia - búsqueda dinámica y normalización
+autonumber
+actor Usuario
+boundary "SearchPage (JS)" as Page
+control SearchController
+entity SearchCriteria
+control SearchOrchestrator
+create SearchSession
+database PdoSearchRepository as Repo
+control ProviderClient
+participant AlphaWS
+participant BetaWS
+participant GammaWS
+control AlphaAdapter
+control BetaAdapter
+control GammaAdapter
+
+Usuario -> Page : completa filtros y pulsa Buscar
+Page -> SearchController : GET /api/search?... (HTTP)
+SearchController -> SearchCriteria : fromQuery($_GET)
+SearchCriteria --> SearchController : criterios normalizados
+SearchController -> SearchOrchestrator : search(criteria)
+SearchOrchestrator -> SearchSession : create(TTL)
+SearchOrchestrator -> Repo : create(session, criteria, providers)
+Repo --> SearchOrchestrator : persistida
+
+par llamadas HTTP reales mediante curl_multi
+  SearchOrchestrator -> ProviderClient : alpha /api/products
+  ProviderClient -> AlphaWS : GET con filtros canónicos
+  note right of AlphaWS
+    PDO prepara SQL dinámico.
+    Solo agrega predicados suministrados.
+  end note
+  AlphaWS --> ProviderClient : {provider, items[]}
+else
+  SearchOrchestrator -> ProviderClient : beta /api/products
+  ProviderClient -> BetaWS : GET con filtros canónicos
+  note right of BetaWS : PDO prepared statement
+  BetaWS --> ProviderClient : {source, products[]}
+else
+  SearchOrchestrator -> ProviderClient : gamma /api/products
+  ProviderClient -> GammaWS : GET con filtros canónicos
+  note right of GammaWS : PDO prepared statement
+  GammaWS --> ProviderClient : {market, results[]}
+end
+
+ProviderClient --> SearchOrchestrator : payloads + estado + duración
+SearchOrchestrator -> AlphaAdapter : normalize(payload)
+AlphaAdapter --> SearchOrchestrator : NormalizedProduct[]
+SearchOrchestrator -> BetaAdapter : normalize(payload)
+BetaAdapter --> SearchOrchestrator : NormalizedProduct[]
+SearchOrchestrator -> GammaAdapter : normalize(payload)
+GammaAdapter --> SearchOrchestrator : NormalizedProduct[]
+SearchOrchestrator -> SearchOrchestrator : merge + global sort + limit
+SearchOrchestrator -> Repo : saveResults(snapshot, statuses, warnings)
+Repo --> SearchOrchestrator : cache temporal guardado
+SearchOrchestrator --> SearchController : SearchResponse
+SearchController --> Page : 200 JSON normalizado
+Page --> Usuario : resultados, origen, ID y cuenta regresiva
+@enduml
+

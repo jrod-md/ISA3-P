@@ -1,0 +1,107 @@
+@startuml
+title Clases principales implementadas
+skinparam classAttributeIconSize 0
+
+package "Shared" {
+  class SearchCriteria {
+    +fromQuery(query): SearchCriteria
+    +toArray(): array
+    +providerKeys(): array
+    +providerQuery(): array
+  }
+  class Database {
+    +connect(schema): PDO
+  }
+  class JsonResponse
+  class Uuid
+}
+
+package "Bus" {
+  class SearchController {
+    +search()
+    +cached(id)
+  }
+  class AdminController {
+    +login()
+    +list()
+    +delete(id)
+    +deleteExpired()
+    +deleteAll()
+  }
+  class SearchSession {
+    +id: string
+    +createdAt: DateTimeImmutable
+    +expiresAt: DateTimeImmutable
+    +ttlSeconds: int
+    +create(ttl): SearchSession
+  }
+  class NormalizedProduct {
+    +provider: string
+    +externalId: string
+    +title: string
+    +price: float
+    +toArray(): array
+  }
+  class SearchOrchestrator {
+    +search(criteria): array
+  }
+  class ProviderClient {
+    +search(providerKeys, query): array
+  }
+  interface ProviderAdapter {
+    +providerKey(): string
+    +normalize(payload): array
+  }
+  class AlphaAdapter
+  class BetaAdapter
+  class GammaAdapter
+  class PdoSearchRepository {
+    +create(session, criteria, providers)
+    +saveResults(id, results, providers, warnings)
+    +find(id): array
+    +list(): array
+    +delete(id): bool
+    +deleteExpired(): int
+    +deleteAll(): int
+  }
+  class ExpirationService {
+    +cleanup(): int
+  }
+  class AdminAuth
+  class Config
+}
+
+package "Provider services" {
+  class ProviderApplication {
+    +run(provider)
+  }
+  class ProductRepository {
+    +search(criteria): array
+    +buildQuery(criteria): array
+  }
+  class ProviderFormatter {
+    +format(provider, rows): array
+  }
+}
+
+SearchController --> SearchCriteria
+SearchController --> SearchOrchestrator
+AdminController --> PdoSearchRepository
+AdminController --> AdminAuth
+SearchOrchestrator *-- SearchSession
+SearchOrchestrator --> ProviderClient
+SearchOrchestrator --> ProviderAdapter
+SearchOrchestrator --> PdoSearchRepository
+SearchOrchestrator --> NormalizedProduct
+ProviderAdapter <|.. AlphaAdapter
+ProviderAdapter <|.. BetaAdapter
+ProviderAdapter <|.. GammaAdapter
+ExpirationService --> PdoSearchRepository
+PdoSearchRepository --> Database
+ProviderApplication --> SearchCriteria
+ProviderApplication --> ProductRepository
+ProviderApplication --> ProviderFormatter
+ProductRepository --> Database
+Config ..> Database
+@enduml
+

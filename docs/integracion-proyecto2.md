@@ -1,0 +1,11 @@
+# Continuidad del Proyecto 1 al Proyecto 2
+
+La integración conserva el Marketplace Search Bus, sus tres proveedores, catálogos, adaptadores, filtros, API administrativa, worker y configuración. El código PHP utiliza autoload propio y PDO, sin framework ni sistema adicional de autenticación.
+
+El Proyecto 1 suministrado autenticaba al administrador desde configuración y no incluía una tabla de usuarios. Se amplió el mismo AdminAuth con `usuarios`, contraseñas hash y roles; el login original `/admin` se conserva y `/login` es su alias. El registro crea Testers y ambos roles entran al dashboard.
+
+Se reutilizaron el catálogo de técnicas/subtécnicas, campos, validaciones y operaciones de casos del avance de pruebas, conectándolos al mismo `BUS_DB_NAME`. `sql/proyecto2_migration.sql` agrega `usuarios` y `casos_prueba`; la relación con usuarios y las reglas de acceso evitan una base o un login duplicados.
+
+`scripts/migrate-proyecto2.php` crea únicamente cuentas ausentes y conserva las existentes. El instalador integrado conserva productos y registros; `sql/instalacion_completa.sql` permite recrear la aplicación con datos demo. El Formulario 1 registra pruebas del propio proyecto, incluye evidencias privadas y valida permisos en el servidor. Los Formularios 2–10 permanecen pendientes.
+
+La preparación para GitHub modifica documentación, exclusiones y pruebas de CI; conserva código funcional, SQL, interfaz y operación local. Las capturas, casos y respaldos de instalaciones particulares no forman parte del repositorio público.

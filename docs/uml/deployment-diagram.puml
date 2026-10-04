@@ -1,0 +1,31 @@
+@startuml
+title Despliegue local para el aula
+
+node "PC Windows del estudiante" {
+  artifact "Navegador" as Browser
+  node "PHP 8.2 :8000" as Bus {
+    artifact "Bus + UI"
+  }
+  node "PHP 8.2 :8101" as Alpha { artifact "Provider Alpha" }
+  node "PHP 8.2 :8102" as Beta { artifact "Provider Beta" }
+  node "PHP 8.2 :8103" as Gamma { artifact "Provider Gamma" }
+  node "PHP CLI" as Worker { artifact "Cleanup worker" }
+  database "MariaDB 10.4 :3306" as DB {
+    folder bus_meta
+    folder market_alpha
+    folder market_beta
+    folder market_gamma
+  }
+}
+
+Browser --> Bus : HTTP
+Bus --> Alpha : HTTP/JSON
+Bus --> Beta : HTTP/JSON
+Bus --> Gamma : HTTP/JSON
+Bus --> DB : PDO MySQL
+Alpha --> DB : PDO -> market_alpha
+Beta --> DB : PDO -> market_beta
+Gamma --> DB : PDO -> market_gamma
+Worker --> DB : PDO -> bus_meta
+@enduml
+

@@ -1,0 +1,64 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: PHP 8.2 / MariaDB / Bus
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          # Ephemeral CI database only; no repository secrets are required.
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+          MARIADB_ROOT_HOST: '%'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    env:
+      APP_ENV: testing
+      APP_DEBUG: 'false'
+      DB_HOST: 127.0.0.1
+      DB_PORT: '3306'
+      DB_USER: root
+      DB_PASSWORD: ''
+      BUS_DB_NAME: bus_meta
+      ALPHA_DB_NAME: market_alpha
+      BETA_DB_NAME: market_beta
+      GAMMA_DB_NAME: market_gamma
+      BUS_HOST: 127.0.0.1
+      BUS_PORT: '8000'
+      PROVIDER_ALPHA_URL: http://127.0.0.1:8101
+      PROVIDER_BETA_URL: http://127.0.0.1:8102
+      PROVIDER_GAMMA_URL: http://127.0.0.1:8103
+      SEARCH_TTL_SECONDS: '3'
+      CLEANUP_INTERVAL_SECONDS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql, curl, fileinfo, mbstring
+          coverage: none
+      - name: PHP syntax
+        run: find apps services shared scripts tests -name '*.php' -print0 | xargs -0 -n 1 php -l && php -l bootstrap.php
+      - name: Prepare environment
+        run: cp .env.example .env
+      - name: Install schemas, tables, demo data and migration
+        run: php scripts/prepare-database.php
+      - name: Existing unit tests
+        run: php tests/run.php
+      - name: Complete installation and safe reimport
+        run: php tests/verify-installation.php
+      - name: Portable distributed Bus tests
+        run: php tests/smoke-bus.php

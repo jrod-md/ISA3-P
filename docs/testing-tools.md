@@ -9,7 +9,7 @@ La aplicación y sus Formularios 1–10 conservan su comportamiento. Esta capa a
 | PHPUnit 11.5.56 | Composer, lockfile y `phpunit.xml.dist` | 99 tests, 172 assertions, sin fallos | Sí |
 | Xdebug 3.5.3 + PHPUnit | Clover, HTML y consola | 219/295 líneas, 74,24 % del alcance seleccionado | Sí; Xdebug mediante setup-php |
 | Selenium IDE | Proyecto `.side` importable y configuración CLI para Edge | Un flujo aprobado con Selenium Side Runner 4.0.13 y Edge; no se ejecutó mediante la extensión IDE | No; ejecución local opcional |
-| Apache JMeter | Plan `.jmx`, tres requests y assertions | XML y estructura comprobados; JMeter/Java no disponibles, sin ejecución ni mediciones | No; ejecución local |
+| Apache JMeter 5.6.3 | Plan `.jmx`, tres requests y assertions | Plan validado; ejecución real en CI pendiente de comprobación | Workflow configurado con Java Temurin 17 |
 | PCOV / TestCover | No integrados | No utilizados | No |
 
 Los recuentos y la cobertura anteriores corresponden a la ejecución local de esta entrega. Para una revisión posterior, consulta los resultados de su propia ejecución; no son un umbral obligatorio ni una medición de rendimiento de la aplicación.
@@ -122,7 +122,11 @@ Plan: `tests/jmeter/isa3-bus.jmx`, formato de Apache JMeter 5.6.3. Tiene **5 usu
 
 Hay timeouts de conexión/respuesta y assertions de respuesta y JSONPath. No hay login, solicitudes de escritura académica ni listeners pesados. No es un benchmark representativo de producción; el servidor PHP local y esta carga pequeña limitan las conclusiones. Las búsquedas generan datos temporales que limpia el worker.
 
-Java y JMeter no estaban disponibles en esta computadora. Se validaron XML, pares de componentes/hashTree, carga, requests y assertions, pero **el plan no se ejecutó**. No hay tiempos, throughput ni porcentaje de errores medidos.
+La ejecución real en GitHub Actions está configurada y pendiente de comprobación. El runner Linux obtiene **Java Temurin 17.0.20+101** mediante `actions/setup-java@v6` y descarga **Apache JMeter 5.6.3**, verificando su SHA-512 antes de descomprimirlo en el directorio temporal del runner. No requiere instalar Java/JMeter en Windows.
+
+Después de la instalación de las bases y la suite portátil, `tests/jmeter/run_ci.py` comprueba que los puertos están libres, inicia sus propios procesos del Bus y los tres proveedores, verifica `/health` y ejecuta el plan en modo headless. Detiene únicamente sus procesos al terminar. La suite portátil ya detiene los suyos, por lo que no se duplican servicios.
+
+La pipeline exige código de salida 0, exactamente 45 muestras (15 por endpoint), HTTP 200 y ausencia de fallos en `success`/`failureMessage`, incluidas las assertions JSON. Imprime total, éxitos, fallos, error, promedio y throughput calculados del JTL. El artefacto **jmeter-results**, con retención de 14 días, conserva `results.jtl`, `jmeter.log`, `report/`, `summary.json`, `versions.txt` y logs de los procesos. El throughput es muestras por segundo entre el inicio de la primera muestra y el final de la última. Es una prueba académica ligera del Bus, no una prueba de carga empresarial.
 
 Para ejecutar, prepara un JDK compatible —por ejemplo Java 17— y descarga la distribución binaria desde [Apache JMeter](https://jmeter.apache.org/download_jmeter.cgi). Puedes descomprimir ambas herramientas dentro de `.runtime/tools`, sin instalación global. Establece `JAVA_HOME` solo en esa ventana de PowerShell y apunta al directorio real de tu JDK. Con JMeter en PATH:
 
@@ -141,6 +145,6 @@ Usa un archivo de resultados nuevo en cada ejecución. El destino por defecto es
 
 ## CI y regresión
 
-GitHub Actions conserva sintaxis PHP, instalación/migraciones, ocho unitarias previas, instalación limpia/reimportación y todas las suites HTTP/Bus existentes. Añade instalación desde `composer.lock` y PHPUnit con Xdebug. Publica `coverage/` y JUnit como artefacto **phpunit-coverage**, con retención de 14 días; los informes generados no se versionan. Selenium/JMeter quedan como herramientas locales y no añaden dependencia de navegador o Java al CI.
+GitHub Actions conserva sintaxis PHP, instalación/migraciones, ocho unitarias previas, instalación limpia/reimportación y todas las suites HTTP/Bus existentes. Instala desde `composer.lock` y ejecuta PHPUnit con Xdebug. Publica `coverage/` y JUnit como artefacto **phpunit-coverage**, con retención de 14 días. Añade la ejecución de JMeter y valida sus muestras; los informes generados quedan fuera de Git. Selenium mantiene su ejecución local y no se vuelve a ejecutar en CI.
 
 La regresión académica completa sigue siendo la indicada en README. Para el Bus portátil, primero detén exclusivamente los procesos propios con `scripts/stop-dev.ps1`, ejecuta `php tests/smoke-bus.php` con MySQL activo y luego `scripts/start-dev.ps1`. No detengas Apache ni MySQL. Nunca ejecutes suites de datos en paralelo contra la misma base.

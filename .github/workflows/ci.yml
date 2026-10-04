@@ -79,3 +79,32 @@ jobs:
         run: php tests/verify-installation.php
       - name: Portable Bus and testing forms tests
         run: php tests/smoke-bus.php
+      - name: Java for JMeter
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17.0.20+101'
+      - name: Download verified Apache JMeter 5.6.3
+        env:
+          JMETER_VERSION: '5.6.3'
+          JMETER_SHA512: 5978a1a35edb5a7d428e270564ff49d2b1b257a65e17a759d259a9283fc17093e522fe46f474a043864aea6910683486340706d745fcdf3db1505fd71e689083
+        run: |
+          archive="apache-jmeter-${JMETER_VERSION}.tgz"
+          curl --fail --show-error --location --retry 3 \
+            "https://dlcdn.apache.org/jmeter/binaries/${archive}" \
+            --output "${RUNNER_TEMP}/${archive}"
+          printf '%s  %s\n' "$JMETER_SHA512" "${RUNNER_TEMP}/${archive}" | sha512sum --check --strict
+          tar -xzf "${RUNNER_TEMP}/${archive}" -C "$RUNNER_TEMP"
+      - name: Test JMeter result validation
+        run: python3 -m unittest discover -s tests/jmeter -p 'test_*.py' -v
+      - name: Real JMeter run and sample validation
+        run: python3 tests/jmeter/run_ci.py --jmeter "$RUNNER_TEMP/apache-jmeter-5.6.3/bin/jmeter"
+      - name: Preserve JMeter results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-results
+          path: .runtime/jmeter/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14

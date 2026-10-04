@@ -86,8 +86,8 @@ try {
     check($anonymous->request('/formularios')['status'] === 302, 'Catálogo protegido');
     foreach (['/dashboard', '/formularios'] as $path) {
         $page = $tester->request($path);
-        check($page['status'] === 200 && str_contains($page['body'], '6 de 10 disponibles'), $path . ' muestra 6 disponibles');
-        check(substr_count($page['body'], '>Pendiente<') === 4 && !str_contains($page['body'], 'Primer avance'), $path . ' deja 7–10 pendientes');
+        check($page['status'] === 200 && str_contains($page['body'], '9 de 10 disponibles'), $path . ' muestra 9 disponibles');
+        check(substr_count($page['body'], '>Pendiente<') === 1 && !str_contains($page['body'], 'Primer avance'), $path . ' deja 10 pendiente');
     }
     $ids = [];
     foreach (array_diff_key(BlackBoxRepository::TYPES, ['cobertura' => true]) as $type => $number) {

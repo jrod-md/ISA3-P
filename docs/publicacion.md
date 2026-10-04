@@ -22,7 +22,7 @@ El comando `git ls-files` anterior debe devolver vacío. `.env`, `.runtime`, ses
 
 ## CI
 
-Cada push y pull request valida sintaxis PHP 8.2, MariaDB 10.11, los cuatro esquemas, las migraciones aditivas, ocho unitarias, instalación/reimportación, 24 comprobaciones del Bus, 100 de Caja Negra, 87 de cobertura y 112 del Plan de Pruebas. La base CI es efímera; no se necesitan secretos ni hay despliegue. El test portable controla exclusivamente sus procesos PHP y falla si un puerto está ocupado.
+Cada push y pull request valida sintaxis PHP 8.2, MariaDB 10.11, los cuatro esquemas, las migraciones aditivas, ocho unitarias, instalación/reimportación, 24 comprobaciones del Bus, 100 de Caja Negra, 87 de cobertura, 112 del Plan de Pruebas y 365 de evaluación/evidencias. La base CI es efímera; no se necesitan secretos ni hay despliegue. El test portable controla exclusivamente sus procesos PHP y falla si un puerto está ocupado.
 
 La regresión completa del Formulario 1 continúa localmente sobre Apache: login, roles, CRUD, evidencias y técnicas. El test PowerShell original también continúa local.
 

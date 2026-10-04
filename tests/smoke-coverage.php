@@ -72,7 +72,7 @@ try {
     check($anon->request($path)['status'] === 302 && $anon->request($path . '/nuevo')['status'] === 302, 'Cobertura requiere sesión');
     foreach (['/dashboard', '/formularios'] as $route) {
         $body = $tester->request($route)['body'];
-        check(str_contains($body, '6 de 10 disponibles') && substr_count($body, '>Pendiente<') === 4 && str_contains($body, $path), $route . ' muestra seis disponibles');
+        check(str_contains($body, '9 de 10 disponibles') && substr_count($body, '>Pendiente<') === 1 && str_contains($body, $path), $route . ' muestra nueve disponibles');
     }
     $editor = $tester->request($path . '/nuevo?caso_id=' . $ownCase)['body'];
     foreach (CoverageMetrics::METRICS as $label) { check(str_contains($editor, $label), 'Métrica fija: ' . $label); }

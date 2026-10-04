@@ -19,6 +19,12 @@ flowchart TD
     F --> E[equivalencia_filas / limite_filas]
     F --> D[decision_reglas / decision_elementos / decision_valores]
     F --> CB[cobertura_metricas: cinco métricas de Caja Blanca]
+    Meta --> R[rubricas: evaluación sumativa]
+    R --> RC[rubrica_criterios: seis puntuaciones]
+    Meta --> EP[evaluaciones_pares: evaluación formativa]
+    EP --> EA[evaluacion_aspectos: seis aspectos]
+    Meta --> PF[portafolios]
+    PF --> PE[portafolio_evidencias: filas ordenadas]
     Meta --> S[search_sessions]
     Meta --> K[search_cache]
     Worker[Worker PHP de caducidad] --> Meta
@@ -32,6 +38,8 @@ El Proyecto 2 extiende el router, la autenticación y la navegación del Proyect
 
 Las bases se extienden mediante SQL aditivo. Los datos de casos no expiran con las búsquedas. Los Formularios 2–5 guardan documentación relacional vinculada al Formulario 1 y a su creador, con permisos comprobados por documento. El Formulario 5 calcula porcentajes a partir de conteos ingresados por el tester; no importa datos automáticamente de herramientas externas.
 
-El Formulario 6 utiliza `planes_prueba` y `plan_cronograma`: es un documento a nivel proyecto, sin `caso_id` ni vínculo con `formularios_prueba`. Conserva un creador y un Responsable académico por separado y permite varios planes/versiones. Se sirve desde `/formularios/plan`. Los Formularios 7–10 continúan pendientes. Consulta [Caja Negra](formularios-caja-negra.md), [cobertura](formulario-cobertura.md) y [plan del proyecto](plan-pruebas.md); la documentación UML complementaria se encuentra en `docs/uml/`.
+El Formulario 6 utiliza `planes_prueba` y `plan_cronograma`: es un documento a nivel proyecto, sin `caso_id` ni vínculo con `formularios_prueba`. Conserva un creador y un Responsable académico por separado y permite varios planes/versiones. Se sirve desde `/formularios/plan`. El Formulario 10 continúa pendiente. Consulta [Caja Negra](formularios-caja-negra.md), [cobertura](formulario-cobertura.md) y [plan del proyecto](plan-pruebas.md); la documentación UML complementaria se encuentra en `docs/uml/`.
+
+Los Formularios 7–9 guardan evaluaciones y evidencias en seis tablas independientes de los casos, con creador de sesión inmutable y permisos por documento. Totales y promedios se calculan en servidor a partir de puntuaciones registradas por el usuario. El portafolio organiza nombres/descripciones sin adjuntos. Consulta [evaluación y evidencias](evaluacion-evidencias.md).
 
 Localmente XAMPP controla Apache y MySQL. Los scripts `start-dev.ps1` y `stop-dev.ps1` controlan exclusivamente PHP propio. CI usa MariaDB efímera y procesos PHP controlados por `tests/smoke-bus.php`, sin despliegue ni dependencia del entorno local.

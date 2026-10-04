@@ -11,6 +11,7 @@ try {
     $pdo->exec(file_get_contents(PROJECT_ROOT . '/sql/formularios_2_4_migration.sql'));
     $pdo->exec(file_get_contents(PROJECT_ROOT . '/sql/formulario_5_migration.sql'));
     $pdo->exec(file_get_contents(PROJECT_ROOT . '/sql/formulario_6_migration.sql'));
+    $pdo->exec(file_get_contents(PROJECT_ROOT . '/sql/formularios_7_9_migration.sql'));
     $accounts = [
         [Config::string('ADMIN_USERNAME', 'admin'), 'Administrador', 'admin@isa3.local', Config::string('ADMIN_PASSWORD', 'demo-isa3-2026'), 'admin'],
         ['tester', 'Tester Demo', 'tester@isa3.local', 'Tester123!', 'tester'],

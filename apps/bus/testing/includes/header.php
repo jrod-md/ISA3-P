@@ -29,7 +29,7 @@ $active = $active ?? '';
         <a <?= $active === 'usuarios' ? 'class="selected" aria-current="page"' : '' ?> href="<?= e(url('/usuarios')) ?>"><span aria-hidden="true">♧</span> Usuarios</a>
     </nav>
     <?php endif; ?>
-    <div class="sidebar-note"><span class="tiny-label">GESTIÓN DE PRUEBAS</span><p>Casos y documentación de pruebas</p><span class="badge badge-success">6 de 10 disponibles</span></div>
+    <div class="sidebar-note"><span class="tiny-label">GESTIÓN DE PRUEBAS</span><p>Casos y documentación de pruebas</p><span class="badge badge-success">9 de 10 disponibles</span></div>
     <?php if ($current): ?>
     <div class="profile"><span class="avatar"><?= e(mb_strtoupper(mb_substr($current['nombre'], 0, 1))) ?></span><div><strong><?= e($current['nombre']) ?></strong><small><?= $current['rol'] === 'admin' ? 'Administrador' : 'Tester' ?></small></div></div>
     <button class="logout" id="session-logout" type="button">Cerrar sesión <span aria-hidden="true">↗</span></button>

@@ -1,0 +1,30 @@
+<?php
+use Marketplace\Bus\Repository\ProjectEvaluationRepository as Evaluation;
+$rowLabels = match ($evaluationType) {
+    'rubrica' => ['puntuacion' => 'Puntuación', 'observacion' => 'Observación'],
+    'evaluacion' => ['autoevaluacion' => 'Autoevaluación', 'coevaluacion' => 'Coevaluación', 'comentarios' => 'Comentarios'],
+    default => ['semana' => 'Semana', 'evidencia' => 'Evidencia', 'tipo' => 'Tipo', 'fecha' => 'Fecha', 'observaciones' => 'Observaciones'],
+};
+// Same row renderer is used for existing entries and the portfolio template.
+$renderRow = function ($key, array $row) use ($evaluationType, $editing, $rowLabels): void {
+    $label = $evaluationType === 'rubrica' ? Evaluation::RUBRIC[$key][0] : ($evaluationType === 'evaluacion' ? Evaluation::ASPECTS[$key] : 'Evidencia ' . ((int) $key + 1));
+    ?><tr><?php if ($evaluationType !== 'portafolio'): ?><th scope="row"><?= e($label) ?></th><?php endif; ?>
+    <?php foreach ($rowLabels as $field => $fieldLabel): $value = $row[$field] ?? ''; $score = in_array($field, ['puntuacion', 'autoevaluacion', 'coevaluacion'], true); $optional = in_array($field, ['observacion', 'observaciones', 'comentarios'], true); ?>
+    <td class="wrap-cell"><?php if (!$editing): ?><?= nl2br(e((string) ($value !== '' ? $value : 'Sin observaciones'))) ?>
+    <?php elseif ($score): ?><select name="filas[<?= e((string) $key) ?>][<?= e($field) ?>]" data-score="<?= e($field) ?>" aria-label="<?= e($label . ' · ' . $fieldLabel) ?>" required><option value="">Seleccionar</option><?php for ($scoreValue = 1; $scoreValue <= 5; $scoreValue++): ?><option value="<?= $scoreValue ?>" <?= (string) $value === (string) $scoreValue ? 'selected' : '' ?>><?= $scoreValue ?><?= $evaluationType === 'rubrica' ? ' · ' . ([1 => 'Deficiente', 2 => 'Deficiente', 3 => 'Regular', 4 => 'Bueno', 5 => 'Excelente'][$scoreValue]) : '' ?></option><?php endfor; ?></select>
+    <?php elseif ($optional): ?><textarea name="filas[<?= e((string) $key) ?>][<?= e($field) ?>]" data-evidence-field="<?= e($field) ?>" data-label="<?= e($fieldLabel) ?>" aria-label="<?= e($label . ' · ' . $fieldLabel) ?>" rows="2" maxlength="5000"><?= e((string) $value) ?></textarea>
+    <?php else: ?><input name="filas[<?= e((string) $key) ?>][<?= e($field) ?>]" data-evidence-field="<?= e($field) ?>" data-label="<?= e($fieldLabel) ?>" aria-label="<?= e($label . ' · ' . $fieldLabel) ?>" type="<?= $field === 'semana' ? 'number' : ($field === 'fecha' ? 'date' : 'text') ?>" <?= $field === 'semana' ? 'min="1" max="52" step="1"' : ($field === 'fecha' ? 'min="1000-01-01" max="9999-12-31"' : 'maxlength="250"') ?> <?= $field === 'tipo' ? 'list="evidence-types"' : '' ?> required value="<?= e((string) $value) ?>"><?php endif; ?></td>
+    <?php endforeach; ?><?php if ($editing && $evaluationType === 'portafolio'): ?><td><button class="button-secondary" type="button" data-evidence-remove>Quitar</button></td><?php endif; ?></tr><?php
+};
+?>
+<section class="panel <?= $editing ? 'form-section' : 'detail-panel' ?>"><h2><?= $evaluationType === 'rubrica' ? 'Criterios de evaluación' : ($evaluationType === 'evaluacion' ? 'Reflexión y evaluación entre pares' : 'Evidencias de aprendizaje') ?></h2>
+<?php if ($evaluationType === 'rubrica'): ?><p class="muted">Excelente = 5 · Bueno = 4 · Regular = 3 · Deficiente = 1–2. Cada puntuación la selecciona quien registra la rúbrica.</p>
+<?php elseif ($evaluationType === 'evaluacion'): ?><p class="muted">Registra las dos valoraciones de 1 a 5 para cada aspecto.</p>
+<?php else: ?><p class="muted">Entre 1 y 30 filas. Semana: entero de 1 a 52. Tipo es texto libre. Observaciones son opcionales.</p><?php endif; ?>
+<div class="table-scroll"><table><caption class="sr-only"><?= e($title) ?>: filas registradas</caption><thead><tr><?php if ($evaluationType !== 'portafolio'): ?><th><?= $evaluationType === 'rubrica' ? 'Criterio' : 'Aspecto' ?></th><?php endif; ?><?php foreach ($rowLabels as $label): ?><th><?= e($label) ?></th><?php endforeach; ?><?php if ($editing && $evaluationType === 'portafolio'): ?><th>Fila</th><?php endif; ?></tr></thead><tbody data-evidence-rows><?php foreach ($values['filas'] as $key => $row): $renderRow($key, $row); endforeach; ?></tbody></table></div>
+<?php if ($evaluationType === 'portafolio' && $editing): ?><button class="button-secondary" type="button" data-evidence-add>+ Agregar evidencia</button><p class="muted" id="evidence-message" role="status" aria-live="polite"></p><datalist id="evidence-types"><?php foreach (['Documento', 'Taller', 'Laboratorio', 'Proyecto', 'Presentación'] as $suggestion): ?><option value="<?= e($suggestion) ?>"></option><?php endforeach; ?></datalist><template id="evidence-row"><?php $renderRow(0, []); ?></template><noscript><p class="muted">Activa JavaScript para agregar o quitar filas.</p></noscript>
+<?php elseif ($evaluationType === 'rubrica'): ?><p class="metric-value" role="status" aria-live="polite" id="evaluation-result"><?= $editing ? 'Total: completa los seis criterios' : 'Total: ' . e((string) $document['total']) . ' / 30' ?></p>
+<?php elseif ($evaluationType === 'evaluacion'): ?><p class="metric-value" role="status" aria-live="polite" id="evaluation-result"><?= $editing ? 'Promedios: completa los seis aspectos' : 'Promedio Autoevaluación: ' . e((string) $document['promedio_auto']) . ' · Promedio Coevaluación: ' . e((string) $document['promedio_co']) ?></p><?php endif; ?></section>
+<?php if ($evaluationType === 'rubrica'): ?>
+<section class="panel detail-panel"><h2>Referencia académica · Unidad III</h2><div class="table-scroll"><table><caption class="sr-only">Descripciones académicas de los seis criterios</caption><thead><tr><th>Criterio</th><th>Excelente · 5</th><th>Bueno · 4</th><th>Regular · 3</th><th>Deficiente · 1–2</th></tr></thead><tbody><?php foreach (Evaluation::RUBRIC as $reference): ?><tr><th scope="row"><?= e($reference[0]) ?></th><?php foreach (array_slice($reference, 1) as $description): ?><td class="wrap-cell"><?= e($description) ?></td><?php endforeach; ?></tr><?php endforeach; ?></tbody></table></div></section>
+<?php endif; ?>

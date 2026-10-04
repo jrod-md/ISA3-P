@@ -23,7 +23,7 @@ El **Formulario 10 registra incidentes del proyecto** con código BUG automátic
 
 ## Requisitos y tecnologías
 
-PHP 8.2 con `pdo_mysql`, `curl`, `fileinfo` y `mbstring`; MariaDB/MySQL; HTML, CSS y JavaScript. No requiere Composer, npm ni framework. Para el entorno local: XAMPP en `C:\xampp`, Apache con `mod_rewrite` y Windows PowerShell 5.1.
+PHP 8.2 con `pdo_mysql`, `curl`, `fileinfo` y `mbstring`; MariaDB/MySQL; HTML, CSS y JavaScript. La aplicación no requiere Composer, npm ni framework para funcionar; PHPUnit usa Composer como dependencia de desarrollo. Para el entorno local: XAMPP en `C:\xampp`, Apache con `mod_rewrite` y Windows PowerShell 5.1.
 
 | Servicio | Puerto |
 | --- | --- |
@@ -83,9 +83,18 @@ Las cuentas se generan por seed/migración con contraseñas hash. `.env`, sesion
 & C:\xampp\php\php.exe .\tests\smoke-incidents.php http://localhost/ISA3-Proyecto2
 ```
 
-GitHub Actions ejecuta sintaxis PHP, instalación/reimportación, ocho unitarias, 24 comprobaciones portables del Bus, 100 de Caja Negra, 87 de cobertura, 112 del Plan de Pruebas y 365 de evaluación/evidencias y 255 de incidentes en Ubuntu con PHP 8.2 y MariaDB 10.11. Se activa en `push` y `pull_request`; no despliega.
+GitHub Actions ejecuta sintaxis PHP, instalación/reimportación, ocho unitarias previas, PHPUnit con Xdebug, 24 comprobaciones portables del Bus, 100 de Caja Negra, 87 de cobertura, 112 del Plan de Pruebas, 365 de evaluación/evidencias y 255 de incidentes en Ubuntu con PHP 8.2 y MariaDB 10.11. Se activa en `push` y `pull_request`; no despliega.
 
 La suite QA completa se ejecuta localmente sobre Apache. El Bus portable se prueba con `php tests/smoke-bus.php`, con MySQL iniciado y los puertos del runtime libres. La prueba distribuida original `scripts/smoke-test.ps1` requiere Windows PowerShell 5.1; consulta [las instrucciones locales](docs/entorno-xampp.md).
+
+## Herramientas de pruebas
+
+PHPUnit prueba unidades reales del proyecto; Xdebug genera cobertura de los archivos seleccionados, con informes Clover/HTML y artefactos en CI. El proyecto Selenium IDE incluye un recorrido Tester ejecutado con Side Runner. JMeter tiene un plan pequeño validado, pendiente de ejecución con Java/JMeter local. No se utiliza TestCover. [Instalación, comandos, alcance y evidencias](docs/testing-tools.md).
+
+```powershell
+composer install
+php vendor/bin/phpunit
+```
 
 ## Roadmap
 

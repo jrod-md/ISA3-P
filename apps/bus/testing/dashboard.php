@@ -10,7 +10,7 @@ $query->execute($where ? [$current['id']] : []);
 $recent = $query->fetchAll();
 $title = 'Dashboard'; $active = 'dashboard'; require __DIR__ . '/includes/header.php';
 ?>
-<div class="page-heading"><div><span class="eyebrow">VISTA GENERAL</span><h1>Hola, <?= e(explode(' ', $current['nombre'])[0]) ?><span class="greeting-dot">.</span></h1><p class="muted"><?= $current['rol'] === 'admin' ? 'Revisa el trabajo del equipo y el resultado de sus pruebas.' : 'Aquí tienes el estado de tus casos de prueba.' ?></p></div><a class="button" href="<?= e(url('/casos/nuevo')) ?>"><span aria-hidden="true">+</span> Nuevo caso</a></div>
+<div class="page-heading"><div><span class="eyebrow">VISTA GENERAL</span><h1 data-testid="dashboard-title">Hola, <?= e(explode(' ', $current['nombre'])[0]) ?><span class="greeting-dot">.</span></h1><p class="muted"><?= $current['rol'] === 'admin' ? 'Revisa el trabajo del equipo y el resultado de sus pruebas.' : 'Aquí tienes el estado de tus casos de prueba.' ?></p></div><a class="button" href="<?= e(url('/casos/nuevo')) ?>"><span aria-hidden="true">+</span> Nuevo caso</a></div>
 <div class="stats-grid">
     <article class="stat"><span>Total de casos</span><strong><?= (int) $stats['total'] ?></strong><small><?= $current['rol'] === 'admin' ? 'Registrados por el equipo' : 'Registrados por ti' ?></small></article>
     <article class="stat"><span><i class="status-dot success"></i> Casos exitosos</span><strong><?= (int) $stats['exitosos'] ?></strong><small>Resultado esperado alcanzado</small></article>

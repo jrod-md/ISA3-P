@@ -1,0 +1,10 @@
+# Opcional: Selenium Side Runner local, sin instalación global.
+capabilities:
+  browserName: MicrosoftEdge
+  ms:edgeOptions:
+    args:
+      - --headless=new
+      - --window-size=1366,900
+maxWorkers: 1
+timeout: 15000
+jestTimeout: 90000

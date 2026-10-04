@@ -1,0 +1,342 @@
+{
+  "id": "d79e98a5-7fa9-4052-8af4-da0a9020ba2a",
+  "version": "2.0",
+  "name": "ISA3-P · recorrido Tester sin escrituras académicas",
+  "url": "http://localhost",
+  "tests": [
+    {
+      "id": "1c8d3d5c-9dcf-4412-a7b4-d82731b8223b",
+      "name": "Login, búsqueda, diez formularios, CP-024 y logout",
+      "commands": [
+        {
+          "id": "ac576c6d-131b-4efe-a554-3fed5d033a0c",
+          "comment": "Sesión independiente. Apache, MySQL y runtime iniciados; CP-024 pertenece a Tester.",
+          "command": "open",
+          "target": "/ISA3-Proyecto2/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "81450018-228a-40ab-9f9a-db31d3c255c6",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "id=username",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "f5b90ee0-ded9-4668-9952-f97286a2b69b",
+          "comment": "",
+          "command": "type",
+          "target": "id=username",
+          "targets": [],
+          "value": "tester"
+        },
+        {
+          "id": "36f866e5-02c2-4f47-83c6-f7a7fe51b483",
+          "comment": "",
+          "command": "type",
+          "target": "id=password",
+          "targets": [],
+          "value": "Tester123!"
+        },
+        {
+          "id": "6c2972c3-49b1-4788-ba40-9ae1e4f0bd7c",
+          "comment": "",
+          "command": "click",
+          "target": "id=login-submit",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "81b525f3-fa28-49d6-bfef-6d6879090405",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "css=[data-testid=\"dashboard-title\"]",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "c0a50119-4189-447f-abce-90007a4c9a01",
+          "comment": "",
+          "command": "assertText",
+          "target": "css=[data-testid=\"dashboard-title\"]",
+          "targets": [],
+          "value": "Hola, Tester."
+        },
+        {
+          "id": "01167ced-1cf8-4f6a-bf59-8d475d92abd6",
+          "comment": "",
+          "command": "open",
+          "target": "/ISA3-Proyecto2/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "32f9d760-260a-4fb2-b3da-76f4efe8183a",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "id=q",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "a497d26f-8c32-42b7-808e-a89811bf4221",
+          "comment": "",
+          "command": "type",
+          "target": "id=q",
+          "targets": [],
+          "value": "laptop"
+        },
+        {
+          "id": "e6c5d002-1295-46b5-816f-0e051e07edf3",
+          "comment": "",
+          "command": "click",
+          "target": "id=search-button",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fe2380be-c807-41f6-949e-5f1f19a5b4d1",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "css=#results article.product-card",
+          "targets": [],
+          "value": "15000"
+        },
+        {
+          "id": "069f22a8-05fc-4284-bf90-aa60fabcf72c",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=#results article.product-card",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fb8e0b81-e4ea-45ce-b0e6-9a8d1cfbfbe7",
+          "comment": "Catálogos demo originales: dos laptops por proveedor.",
+          "command": "assertText",
+          "target": "id=result-count",
+          "targets": [],
+          "value": "6"
+        },
+        {
+          "id": "ca1ef2fa-7517-4486-ab0b-6c6371ef1b5b",
+          "comment": "",
+          "command": "open",
+          "target": "/ISA3-Proyecto2/formularios",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "88a113f1-daa8-4e43-8316-639958b88c54",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "css=[data-testid=\"forms-available\"]",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "8a1414a1-fa72-45c2-b5a2-b87627552a6f",
+          "comment": "",
+          "command": "assertText",
+          "target": "css=[data-testid=\"forms-available\"]",
+          "targets": [],
+          "value": "10 de 10 disponibles"
+        },
+        {
+          "id": "aa485b1e-8403-4a00-8ada-a721ceb57de3",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=.form-summary a[href=\"/ISA3-Proyecto2/casos\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4c5d10fe-9012-4655-90ce-d6ef29e550d4",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=.form-summary a[href=\"/ISA3-Proyecto2/formularios/equivalencia\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6fd36e6e-4c8e-442a-9bbb-bedb39ce0928",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=.form-summary a[href=\"/ISA3-Proyecto2/formularios/limites\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d081ddb6-74a1-4bd3-a080-b017c5fc5285",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=.form-summary a[href=\"/ISA3-Proyecto2/formularios/decision\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "07140c08-827b-4c53-9aa4-33d962b04000",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=.form-summary a[href=\"/ISA3-Proyecto2/formularios/cobertura\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3a63cb60-20cd-41d0-a3e7-03f6b770944a",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=.form-summary a[href=\"/ISA3-Proyecto2/formularios/plan\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "aeec2a13-711b-48bf-a8d7-f1ea1c9b589c",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=.form-summary a[href=\"/ISA3-Proyecto2/formularios/rubrica\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "afa6f9d5-6515-47b7-879b-b962ee67e495",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=.form-summary a[href=\"/ISA3-Proyecto2/formularios/evaluacion\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2dc8cb09-aecc-48c9-991a-e2c54b559508",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=.form-summary a[href=\"/ISA3-Proyecto2/formularios/portafolio\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "eb48c696-133a-4a9d-b0cf-51f6f8f695a8",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "css=.form-summary a[href=\"/ISA3-Proyecto2/formularios/incidentes\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "dd5f5a89-c9e0-4065-8379-75050fc941f0",
+          "comment": "",
+          "command": "open",
+          "target": "/ISA3-Proyecto2/casos",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "32580746-38ec-4159-98be-e36c4b9d2f9e",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "css=.case-code[href=\"/ISA3-Proyecto2/casos/ver?id=24\"]",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "51414032-5274-4a21-be1d-1e1ab65b326e",
+          "comment": "",
+          "command": "assertText",
+          "target": "css=.case-code[href=\"/ISA3-Proyecto2/casos/ver?id=24\"]",
+          "targets": [],
+          "value": "CP-024"
+        },
+        {
+          "id": "f6806c5d-15b3-4ebf-b79b-decd6e70defc",
+          "comment": "",
+          "command": "executeScript",
+          "target": "return document.querySelector('.menu-toggle').getClientRects().length > 0;",
+          "targets": [],
+          "value": "menuVisible"
+        },
+        {
+          "id": "7d19fdaa-bcbc-472d-a06c-f9165c3c0ade",
+          "comment": "",
+          "command": "if",
+          "target": "${menuVisible}",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1abb0ab0-fbc1-4737-a8ad-1d667e32e41c",
+          "comment": "Abrir la navegación si el menú móvil está visible.",
+          "command": "click",
+          "target": "css=.menu-toggle",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4863fc16-61f0-4beb-bd74-cf5552ad6600",
+          "comment": "",
+          "command": "end",
+          "target": "",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "27bd3497-c1f7-4c38-9b38-05350686b5ec",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "id=session-logout",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "fea5259d-e295-4972-a9ac-b4e8c546dd39",
+          "comment": "",
+          "command": "click",
+          "target": "id=session-logout",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7c245313-b7c1-4e62-b940-1f2bf9470509",
+          "comment": "",
+          "command": "waitForElementVisible",
+          "target": "id=username",
+          "targets": [],
+          "value": "10000"
+        },
+        {
+          "id": "20c94855-80c2-4496-a83a-d93d7fac43f5",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=login-submit",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0a604a89-844a-4a41-9048-daf037485ddf",
+          "comment": "",
+          "command": "assertElementNotPresent",
+          "target": "id=session-logout",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "dec68be0-1725-4551-9871-16f0e1863ee5",
+      "name": "Demostración académica",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 90,
+      "tests": [
+        "1c8d3d5c-9dcf-4412-a7b4-d82731b8223b"
+      ]
+    }
+  ],
+  "urls": [
+    "http://localhost"
+  ],
+  "plugins": []
+}

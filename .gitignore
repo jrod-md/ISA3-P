@@ -54,3 +54,8 @@ Desktop.ini
 .phpunit.result.cache
 /coverage/
 /test-results/
+
+# Dependencies are installed locally from their lockfile.
+/vendor/
+/node_modules/
+*.jtl

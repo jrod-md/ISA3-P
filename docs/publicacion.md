@@ -9,7 +9,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\export-public.ps1
 cd .runtime\public\ISA3-P
 git status --short
 git diff
-git ls-files .env .runtime '*.zip' 'docs/evidencias/*'
+git ls-files .env .runtime vendor coverage test-results '*.zip' '*.jtl' 'docs/evidencias/*'
 git add .
 git diff --cached --check
 git commit -m "Describe the tested change"
@@ -18,11 +18,11 @@ git push origin main
 
 El exportador conserva el `.git`, los commits y el remoto existentes. Antes de sincronizar exige que la copia pública esté limpia, para evitar sobrescribir cambios pendientes. Si el destino aún no tiene Git, archiva una exportación anterior antes de crear la nueva. Utiliza una lista explícita de fuentes, respeta `.gitignore` y verifica cada copia por SHA256. No exporta el historial local antiguo.
 
-El comando `git ls-files` anterior debe devolver vacío. `.env`, `.runtime`, sesiones, evidencias privadas, capturas, logs, ZIPs y respaldos quedan excluidos. Los SQL, `.env.example`, scripts, tests y assets sí forman parte del producto. Las cuentas Admin/Tester y las cuentas temporales de las pruebas son fixtures públicos; antes de publicar revisa el diff para detectar credenciales privadas o archivos inesperados.
+El comando `git ls-files` anterior debe devolver vacío. `.env`, `.runtime`, sesiones, evidencias privadas, capturas, logs, ZIPs, respaldos, dependencias instaladas y resultados generados quedan excluidos. Los SQL, `.env.example`, scripts, tests, assets, `composer.json`, `composer.lock`, `phpunit.xml.dist` y planes `.side`/`.jmx` sí forman parte del producto. Las cuentas Admin/Tester y las cuentas temporales de las pruebas son fixtures públicos; antes de publicar revisa el diff para detectar credenciales privadas o archivos inesperados.
 
 ## CI
 
-Cada push y pull request valida sintaxis PHP 8.2, MariaDB 10.11, los cuatro esquemas, las migraciones aditivas, ocho unitarias, instalación/reimportación, 24 comprobaciones del Bus, 100 de Caja Negra, 87 de cobertura, 112 del Plan de Pruebas y 365 de evaluación/evidencias y 255 de incidentes. La base CI es efímera; no se necesitan secretos ni hay despliegue. El test portable controla exclusivamente sus procesos PHP y falla si un puerto está ocupado.
+Cada push y pull request valida sintaxis PHP 8.2, MariaDB 10.11, los cuatro esquemas, las migraciones aditivas, ocho unitarias previas, PHPUnit con Xdebug, instalación/reimportación, 24 comprobaciones del Bus, 100 de Caja Negra, 87 de cobertura, 112 del Plan de Pruebas, 365 de evaluación/evidencias y 255 de incidentes. Composer instala dependencias desde el lockfile y los reportes PHPUnit/cobertura se conservan como artefactos, sin versionarlos. La base CI es efímera; no se necesitan secretos ni hay despliegue. El test portable controla exclusivamente sus procesos PHP y falla si un puerto está ocupado. Consulta [herramientas de pruebas](testing-tools.md).
 
 La regresión completa del Formulario 1 continúa localmente sobre Apache: login, roles, CRUD, evidencias y técnicas. El test PowerShell original también continúa local.
 

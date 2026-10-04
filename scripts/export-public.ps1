@@ -23,7 +23,7 @@ if ($preserveGit) {
 New-Item -ItemType Directory -Force -Path $destination | Out-Null
 
 $directories = @('.github', 'apps', 'database', 'docs', 'scripts', 'services', 'shared', 'sql', 'tests')
-$rootFiles = @('.env.example', '.gitignore', '.htaccess', 'bootstrap.php', 'README.md', 'LICENSE', 'PRODUCT.md', 'DESIGN.md')
+$rootFiles = @('.env.example', '.gitignore', '.htaccess', 'bootstrap.php', 'README.md', 'LICENSE', 'PRODUCT.md', 'DESIGN.md', 'composer.json', 'composer.lock', 'phpunit.xml.dist')
 $candidates = @($rootFiles | ForEach-Object { Get-Item -LiteralPath (Join-Path $sourceRoot $_) })
 foreach ($directory in $directories) {
     $candidates += Get-ChildItem -LiteralPath (Join-Path $sourceRoot $directory) -File -Recurse -Force

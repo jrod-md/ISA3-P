@@ -1,0 +1,20 @@
+{
+    "name": "jrod-md/isa3-p",
+    "description": "Herramientas de desarrollo para las pruebas de ISA3-P",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:coverage": "phpunit --coverage-text --coverage-clover coverage/clover.xml --coverage-html coverage/html --log-junit test-results/phpunit.xml"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": false
+    }
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+         bootstrap="tests/phpunit/bootstrap.php" cacheDirectory=".phpunit.cache"
+         colors="true" failOnWarning="true" failOnRisky="true" failOnDeprecation="true">
+    <testsuites>
+        <testsuite name="Unidades reales de ISA3-P">
+            <directory>tests/phpunit</directory>
+        </testsuite>
+    </testsuites>
+    <!-- Alcance explícito: unidades seleccionadas, no toda la aplicación. Los
+         métodos HTTP/SQL de los archivos incluidos pueden quedar sin cobertura. -->
+    <source>
+        <include>
+            <directory>apps/bus/src/Domain</directory>
+            <file>shared/src/Domain/SearchCriteria.php</file>
+            <file>shared/src/Support/ValidationException.php</file>
+            <file>shared/src/Support/Uuid.php</file>
+            <file>apps/bus/src/Service/AlphaAdapter.php</file>
+            <file>apps/bus/src/Service/BetaAdapter.php</file>
+            <file>apps/bus/src/Service/GammaAdapter.php</file>
+            <file>apps/bus/src/Repository/CoverageMetrics.php</file>
+            <file>apps/bus/src/Repository/IncidentRepository.php</file>
+            <file>apps/bus/testing/includes/funciones.php</file>
+            <file>services/common/src/ProviderFormatter.php</file>
+            <file>services/common/src/ProductRepository.php</file>
+        </include>
+    </source>
+    <coverage includeUncoveredFiles="true"/>
+</phpunit>

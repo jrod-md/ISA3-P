@@ -8,7 +8,7 @@ use RuntimeException;
 
 final class BlackBoxRepository
 {
-    public const TYPES = ['equivalencia' => 2, 'limites' => 3, 'decision' => 4];
+    public const TYPES = ['equivalencia' => 2, 'limites' => 3, 'decision' => 4, 'cobertura' => 5];
     public const FIELDS = [
         'equivalencia' => ['campo' => 'Campo', 'clase_valida' => 'Clase Válida', 'clases_invalidas' => 'Clases Inválidas', 'valores_representativos' => 'Valores Representativos', 'resultado_esperado' => 'Resultado Esperado'],
         'limites' => ['campo' => 'Campo', 'rango_valido' => 'Rango Válido', 'valor_minimo' => 'Valor Mínimo', 'valor_maximo' => 'Valor Máximo', 'valores_limite' => 'Valores Límite a Probar', 'resultado_esperado' => 'Resultado Esperado'],
@@ -47,6 +47,12 @@ final class BlackBoxRepository
     public function contents(array $document): array
     {
         $id = (int) $document['id']; $type = $document['tipo'];
+        if ($type === 'cobertura') {
+            $query = $this->pdo->prepare('SELECT * FROM cobertura_metricas WHERE formulario_id = ? ORDER BY orden'); $query->execute([$id]);
+            $data = CoverageMetrics::blank();
+            foreach ($query->fetchAll() as $row) { $data['metricas'][$row['metrica']] = $row; }
+            return $data;
+        }
         if ($type !== 'decision') {
             $query = $this->pdo->prepare('SELECT * FROM ' . self::TABLES[$type] . ' WHERE formulario_id = ? ORDER BY orden');
             $query->execute([$id]); return ['filas' => $query->fetchAll()];
@@ -75,6 +81,7 @@ final class BlackBoxRepository
     public static function validate(string $type, array $data): array
     {
         if (!isset(self::TYPES[$type])) { throw new InvalidArgumentException('Formulario no válido.'); }
+        if ($type === 'cobertura') { return CoverageMetrics::validate($data); }
         if ($type !== 'decision') {
             $rows = $data['filas'] ?? null;
             if (!is_array($rows) || count($rows) < 1 || count($rows) > 30) { throw new InvalidArgumentException('Agrega entre 1 y 30 filas.'); }
@@ -131,7 +138,14 @@ final class BlackBoxRepository
                 $this->pdo->prepare('INSERT INTO formularios_prueba (caso_id, usuario_id, tipo) VALUES (?, ?, ?)')->execute([$caseId, $user['id'], $type]);
                 $id = (int) $this->pdo->lastInsertId();
             }
-            if ($type !== 'decision') {
+            if ($type === 'cobertura') {
+                $this->pdo->prepare('DELETE FROM cobertura_metricas WHERE formulario_id = ?')->execute([$id]);
+                $insert = $this->pdo->prepare('INSERT INTO cobertura_metricas (formulario_id, metrica, total, cubiertos, porcentaje, herramienta, orden) VALUES (?, ?, ?, ?, ?, ?, ?)');
+                foreach (array_keys(CoverageMetrics::METRICS) as $order => $metric) {
+                    $row = $data['metricas'][$metric];
+                    $insert->execute([$id, $metric, $row['total'], $row['cubiertos'], $row['porcentaje'], $row['herramienta'], $order]);
+                }
+            } elseif ($type !== 'decision') {
                 $table = self::TABLES[$type]; $fields = array_keys(self::FIELDS[$type]);
                 $this->pdo->prepare('DELETE FROM ' . $table . ' WHERE formulario_id = ?')->execute([$id]);
                 $insert = $this->pdo->prepare('INSERT INTO ' . $table . ' (formulario_id, orden, ' . implode(', ', $fields) . ') VALUES (' . implode(', ', array_fill(0, count($fields) + 2, '?')) . ')');

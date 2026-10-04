@@ -51,7 +51,7 @@ $testingRoutes = [
     '/casos/ver' => 'casos/ver.php', '/casos/editar' => 'casos/editar.php',
     '/casos/eliminar' => 'casos/eliminar.php', '/casos/evidencia' => 'casos/evidencia.php',
 ];
-if (preg_match('#^/formularios/(equivalencia|limites|decision)(?:/(nuevo|ver|editar|eliminar))?$#', $path, $matches)) {
+if (preg_match('#^/formularios/(equivalencia|limites|decision|cobertura)(?:/(nuevo|ver|editar|eliminar))?$#', $path, $matches)) {
     if (!in_array($method, ['GET', 'POST'], true)) { http_response_code(405); header('Allow: GET, POST'); exit('Método no permitido'); }
     $matrixType = $matches[1]; $matrixAction = $matches[2] ?? 'listado';
     if ($method === 'POST' && in_array($matrixAction, ['listado', 'ver'], true)) { http_response_code(405); header('Allow: GET'); exit('Método no permitido'); }

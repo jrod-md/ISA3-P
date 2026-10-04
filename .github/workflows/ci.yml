@@ -60,5 +60,5 @@ jobs:
         run: php tests/run.php
       - name: Complete installation and safe reimport
         run: php tests/verify-installation.php
-      - name: Portable Bus and black-box forms tests
+      - name: Portable Bus and testing forms tests
         run: php tests/smoke-bus.php

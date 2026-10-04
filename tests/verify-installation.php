@@ -23,10 +23,10 @@ try {
         if ((int) $pdo->query('SELECT COUNT(*) FROM `' . $schemas[$name] . '`.products')->fetchColumn() !== $expected) { throw new RuntimeException('Catálogo incorrecto: ' . $name); }
     }
     $pdo->exec('USE `' . $schemas['bus_meta'] . '`');
-    foreach (['formularios_prueba', 'equivalencia_filas', 'limite_filas', 'decision_reglas', 'decision_elementos', 'decision_valores'] as $table) {
+    foreach (['formularios_prueba', 'equivalencia_filas', 'limite_filas', 'decision_reglas', 'decision_elementos', 'decision_valores', 'cobertura_metricas'] as $table) {
         $check = $pdo->prepare('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name = ?');
         $check->execute([$schemas['bus_meta'], $table]);
-        if ((int) $check->fetchColumn() !== 1) { throw new RuntimeException('Falta tabla de Formularios 2–4: ' . $table); }
+        if ((int) $check->fetchColumn() !== 1) { throw new RuntimeException('Falta tabla de Formularios 2–5: ' . $table); }
     }
     if ((int) $pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn() !== 2 || (int) $pdo->query('SELECT COUNT(*) FROM casos_prueba')->fetchColumn() !== 0) { throw new RuntimeException('Instalación inicial incorrecta'); }
     foreach (['admin' => 'demo-isa3-2026', 'tester' => 'Tester123!'] as $username => $password) {
@@ -40,9 +40,15 @@ try {
     $pdo->exec("INSERT INTO formularios_prueba (caso_id, usuario_id, tipo) SELECT {$caseId}, id, 'equivalencia' FROM usuarios WHERE username = 'tester'");
     $documentId = (int) $pdo->lastInsertId();
     $pdo->exec("INSERT INTO equivalencia_filas (formulario_id, orden, campo, clase_valida, clases_invalidas, valores_representativos, resultado_esperado) VALUES ({$documentId}, 0, 'Precio', '0–900', 'Menor que cero', '0, 900', 'Aceptar')");
+    $pdo->exec("INSERT INTO formularios_prueba (caso_id, usuario_id, tipo) SELECT {$caseId}, id, 'cobertura' FROM usuarios WHERE username = 'tester'");
+    $coverageId = (int) $pdo->lastInsertId();
+    $insert = $pdo->prepare('INSERT INTO cobertura_metricas (formulario_id,metrica,total,cubiertos,porcentaje,herramienta,orden) VALUES (?,?,3,1,33.33,?,?)');
+    foreach (array_keys(Marketplace\Bus\Repository\CoverageMetrics::METRICS) as $order => $metric) { $insert->execute([$coverageId, $metric, 'Manual', $order]); }
+    $coverageBefore = $pdo->query('SELECT * FROM cobertura_metricas ORDER BY id')->fetchAll();
     $pdo->exec($sql);
     $pdo->exec('USE `' . $schemas['bus_meta'] . '`');
     if ((int) $pdo->query('SELECT COUNT(*) FROM equivalencia_filas WHERE formulario_id = ' . $documentId)->fetchColumn() !== 1) { throw new RuntimeException('Reimportación alteró documentación de Caja Negra'); }
+    if ($pdo->query('SELECT * FROM cobertura_metricas ORDER BY id')->fetchAll() !== $coverageBefore) { throw new RuntimeException('Reimportación alteró métricas de Caja Blanca'); }
     if ((int) $pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn() !== 2 || (int) $pdo->query('SELECT COUNT(*) FROM search_sessions')->fetchColumn() !== 1 || $pdo->query("SELECT nombre FROM usuarios WHERE username = 'tester'")->fetchColumn() !== 'Nombre conservado') { throw new RuntimeException('La reimportación alteró datos existentes'); }
     $constraints = $pdo->prepare("SELECT COUNT(*) FROM information_schema.referential_constraints WHERE constraint_schema = ? AND constraint_name IN ('fk_search_cache_session', 'fk_casos_usuario')");
     $constraints->execute([$schemas['bus_meta']]);

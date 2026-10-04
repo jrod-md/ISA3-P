@@ -9,11 +9,11 @@ Proyecto académico de Ingeniería de Software Aplicada III. Integra el **Market
 ## Funcionalidades
 
 - Búsqueda distribuida en Alpha, Beta y Gamma, con filtros, normalización de resultados, caché temporal y worker de caducidad.
-- Autenticación existente ampliada con roles Administrador y Tester, dashboard y Formularios 1–4.
+- Autenticación existente ampliada con roles Administrador y Tester, dashboard y Formularios 1–5.
 - Creación, consulta y edición de casos; eliminación reservada al Administrador. El Tester accede a sus propios casos.
 - Registro de técnica y subtécnica de Caja Negra/Caja Blanca, resultados Éxito/Fallo y evidencias privadas PNG, JPG o PDF de hasta 2 MB.
 
-Los Formularios 2–4 documentan **clases de equivalencia, valores límite y tablas de decisión**, con filas y reglas dinámicas vinculadas a un caso existente. El Tester consulta y edita su documentación; el Administrador gestiona todos los registros. Los **Formularios 5–10 continúan pendientes**. Los formularios documentan pruebas del propio proyecto; no calculan cobertura automáticamente.
+Los Formularios 2–4 documentan **clases de equivalencia, valores límite y tablas de decisión**, con filas y reglas dinámicas vinculadas a un caso existente. El Formulario 5 registra **cobertura de Caja Blanca**: el tester ingresa Total y Cubiertos y el sistema calcula el porcentaje. Herramienta Utilizada es texto libre; en esta versión no se obtiene cobertura automáticamente desde TestCover, PHPUnit ni otras herramientas externas. El Tester consulta y edita su documentación; el Administrador gestiona todos los registros. Los **Formularios 6–10 continúan pendientes**.
 
 ## Requisitos y tecnologías
 
@@ -53,7 +53,7 @@ Para detener únicamente los procesos propios:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\stop-dev.ps1
 ```
 
-La instalación utiliza los SQL originales y las migraciones aditivas QA y `sql/formularios_2_4_migration.sql`. En una instalación existente también puedes ejecutar `php scripts/migrate-proyecto2.php`. No ejecutes `database/reset.sql` ni el seed original sobre datos que quieras conservar. Más detalles en [operación local](docs/entorno-xampp.md) y [Formularios 2–4](docs/formularios-caja-negra.md).
+La instalación utiliza los SQL originales y las migraciones aditivas QA, `sql/formularios_2_4_migration.sql` y `sql/formulario_5_migration.sql`. En una instalación existente también puedes ejecutar `php scripts/migrate-proyecto2.php`. No ejecutes `database/reset.sql` ni el seed original sobre datos que quieras conservar. Más detalles en [operación local](docs/entorno-xampp.md), [Formularios 2–4](docs/formularios-caja-negra.md) y [Formulario 5](docs/formulario-cobertura.md).
 
 ## Cuentas demo
 
@@ -71,9 +71,10 @@ Las cuentas se generan por seed/migración con contraseñas hash. `.env`, sesion
 & C:\xampp\php\php.exe .\tests\verify-installation.php
 & C:\xampp\php\php.exe .\tests\smoke-proyecto2.php http://localhost/ISA3-Proyecto2
 & C:\xampp\php\php.exe .\tests\smoke-black-box.php http://localhost/ISA3-Proyecto2
+& C:\xampp\php\php.exe .\tests\smoke-coverage.php http://localhost/ISA3-Proyecto2
 ```
 
-GitHub Actions ejecuta sintaxis PHP, instalación/reimportación, ocho unitarias, 24 comprobaciones portables del Bus y 100 de los Formularios 2–4 en Ubuntu con PHP 8.2 y MariaDB 10.11. Se activa en `push` y `pull_request`; no despliega.
+GitHub Actions ejecuta sintaxis PHP, instalación/reimportación, ocho unitarias, 24 comprobaciones portables del Bus, 100 de los Formularios 2–4 y 87 del Formulario 5 en Ubuntu con PHP 8.2 y MariaDB 10.11. Se activa en `push` y `pull_request`; no despliega.
 
 La suite QA completa se ejecuta localmente sobre Apache. El Bus portable se prueba con `php tests/smoke-bus.php`, con MySQL iniciado y los puertos del runtime libres. La prueba distribuida original `scripts/smoke-test.ps1` requiere Windows PowerShell 5.1; consulta [las instrucciones locales](docs/entorno-xampp.md).
 

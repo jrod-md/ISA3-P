@@ -86,11 +86,11 @@ try {
     check($anonymous->request('/formularios')['status'] === 302, 'Catálogo protegido');
     foreach (['/dashboard', '/formularios'] as $path) {
         $page = $tester->request($path);
-        check($page['status'] === 200 && str_contains($page['body'], '4 de 10 disponibles'), $path . ' muestra 4 disponibles');
-        check(substr_count($page['body'], '>Pendiente<') === 6 && !str_contains($page['body'], 'Primer avance'), $path . ' deja 5–10 pendientes');
+        check($page['status'] === 200 && str_contains($page['body'], '5 de 10 disponibles'), $path . ' muestra 5 disponibles');
+        check(substr_count($page['body'], '>Pendiente<') === 5 && !str_contains($page['body'], 'Primer avance'), $path . ' deja 6–10 pendientes');
     }
     $ids = [];
-    foreach (BlackBoxRepository::TYPES as $type => $number) {
+    foreach (array_diff_key(BlackBoxRepository::TYPES, ['cobertura' => true]) as $type => $number) {
         $path = '/formularios/' . $type;
         check($anonymous->request($path . '/nuevo')['status'] === 302, $type . ' creación anónima rechazada');
         $payload = fixture_data($type); $payload['caso_id'] = $ownCase;

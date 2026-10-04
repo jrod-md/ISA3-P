@@ -281,6 +281,17 @@ input[type="file"]::file-selector-button { border: 1px solid var(--line); paddin
 .search-case-action { flex-basis: 100%; padding-top: 12px; border-top: 1px solid var(--line); }
 .workflow-steps { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: -10px 0 24px; font-size: 11px; color: var(--muted); }
 .workflow-steps strong { color: var(--green); font-weight: 600; }
+.matrix-editor { min-width: 900px; }
+.matrix-editor td { vertical-align: top; }
+.matrix-editor textarea { min-width: 145px; width: 100%; }
+.decision-editor input { min-width: 130px; }
+.decision-editor td:first-child input { min-width: 220px; }
+.decision-editor select { min-width: 90px; }
+.decision-editor label { display: grid; gap: 5px; }
+.decision-editor th[data-rule] { min-width: 180px; white-space: normal; }
+.decision-editor th[data-rule] input { display: block; }
+.decision-editor th[data-rule] button { display: flex; margin-top: 8px; white-space: nowrap; }
+.associated-document { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 16px 0; border-bottom: 1px solid var(--line); }
 @media (max-width: 1100px) { .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 800px) {
     .sidebar { max-height: none; }

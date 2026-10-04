@@ -45,11 +45,18 @@ if ($method === 'DELETE' && $path === '/api/admin/searches') { $admin->deleteAll
 if ($method === 'DELETE' && preg_match('#^/api/admin/searches/([0-9a-f-]{36})$#i', $path, $matches)) { $admin->delete($matches[1]); }
 
 $testingRoutes = [
+    '/formularios' => 'formularios/index.php',
     '/dashboard' => 'dashboard.php', '/usuarios' => 'usuarios.php', '/registro' => 'register.php', '/busquedas' => 'busquedas.php',
     '/casos' => 'casos/index.php', '/casos/nuevo' => 'casos/crear.php',
     '/casos/ver' => 'casos/ver.php', '/casos/editar' => 'casos/editar.php',
     '/casos/eliminar' => 'casos/eliminar.php', '/casos/evidencia' => 'casos/evidencia.php',
 ];
+if (preg_match('#^/formularios/(equivalencia|limites|decision)(?:/(nuevo|ver|editar|eliminar))?$#', $path, $matches)) {
+    if (!in_array($method, ['GET', 'POST'], true)) { http_response_code(405); header('Allow: GET, POST'); exit('Método no permitido'); }
+    $matrixType = $matches[1]; $matrixAction = $matches[2] ?? 'listado';
+    if ($method === 'POST' && in_array($matrixAction, ['listado', 'ver'], true)) { http_response_code(405); header('Allow: GET'); exit('Método no permitido'); }
+    require dirname(__DIR__) . '/testing/formularios/documento.php'; exit;
+}
 if (isset($testingRoutes[$path])) {
     if (!in_array($method, ['GET', 'POST'], true)) {
         http_response_code(405); header('Allow: GET, POST'); exit('Método no permitido');

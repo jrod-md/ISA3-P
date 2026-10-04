@@ -119,6 +119,11 @@ try {
         'username' => Config::string('ADMIN_USERNAME', 'admin'),
         'password' => Config::string('ADMIN_PASSWORD', 'demo-isa3-2026')]);
     expect($login['status'] === 200 && ($login['json']['authenticated'] ?? false), 'Demo admin authentication');
+    $formsTest = proc_open([PHP_BINARY, PROJECT_ROOT . '/tests/smoke-black-box.php', 'http://127.0.0.1:8000'],
+        [0 => ['pipe', 'r'], 1 => STDOUT, 2 => STDERR], $formsPipes, PROJECT_ROOT);
+    if (!is_resource($formsTest)) { throw new RuntimeException('Cannot start black-box HTTP tests'); }
+    fclose($formsPipes[0]);
+    if (proc_close($formsTest) !== 0) { throw new RuntimeException('Black-box HTTP tests failed'); }
     $result = search('q=laptop&category=computers&max_price=900&provider=all&sort=price_asc');
     expect(count(array_filter($result['providers'], fn ($provider) => $provider['status'] === 'ok')) === 3 && $result['total'] > 0, 'All providers aggregated');
     expect(count(array_filter($result['results'], fn ($product) => isset($product['external_id'], $product['provider']))) === $result['total'], 'Normalized results');

@@ -1,0 +1,3 @@
+<?php foreach (FORMULARIOS as $index => $name): ?>
+<div class="form-summary-row <?= $index < 4 ? 'available' : '' ?>"><span class="form-number"><?= str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) ?></span><div><strong><?= e($name) ?></strong><?php if ($index > 0 && $index < 4): ?><small>Caja Negra · Vinculado a un caso de prueba</small><?php endif; ?></div><?php if ($index < 4): ?><a class="text-link" href="<?= e(url(FORMULARIO_RUTAS[$index])) ?>">Disponible →</a><?php else: ?><span class="badge badge-pending">Pendiente</span><?php endif; ?></div>
+<?php endforeach; ?>

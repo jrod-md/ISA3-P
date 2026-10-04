@@ -9,14 +9,18 @@ if (!$destination.StartsWith($sourceRoot + [IO.Path]::DirectorySeparatorChar, [S
     throw 'La exportacion debe permanecer dentro del runtime de este proyecto.'
 }
 New-Item -ItemType Directory -Force -Path $publicRoot | Out-Null
-if (Test-Path -LiteralPath $destination) {
+$preserveGit = Test-Path -LiteralPath (Join-Path $destination '.git')
+if ($preserveGit) {
+    $pendingChanges = & git -C $destination status --porcelain
+    if ($LASTEXITCODE -ne 0 -or $pendingChanges) { throw 'La copia publica tiene cambios pendientes. Revisalos antes de sincronizar.' }
+} elseif (Test-Path -LiteralPath $destination) {
     $archive = [IO.Path]::GetFullPath((Join-Path $publicRoot ('ISA3-P-anterior-' + (Get-Date -Format 'yyyyMMdd-HHmmss-ffff'))))
     if (!$archive.StartsWith($sourceRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
         throw 'El archivo de una exportacion previa debe permanecer dentro del proyecto.'
     }
     Move-Item -LiteralPath $destination -Destination $archive
 }
-New-Item -ItemType Directory -Path $destination | Out-Null
+New-Item -ItemType Directory -Force -Path $destination | Out-Null
 
 $directories = @('.github', 'apps', 'database', 'docs', 'scripts', 'services', 'shared', 'sql', 'tests')
 $rootFiles = @('.env.example', '.gitignore', '.htaccess', 'bootstrap.php', 'README.md', 'LICENSE', 'PRODUCT.md', 'DESIGN.md')
@@ -40,4 +44,4 @@ foreach ($file in $candidates) {
     $count++
 }
 Write-Host "Exportacion publica verificada: $count archivos en $destination"
-Write-Host 'Sin .git ni historial previo. Repositorio publico: jrod-md/ISA3-P.'
+Write-Host "Git publico existente conservado: $preserveGit. Repositorio: jrod-md/ISA3-P."

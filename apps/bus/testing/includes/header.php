@@ -19,6 +19,7 @@ $active = $active ?? '';
     <nav aria-label="Navegación principal">
         <a <?= $active === 'dashboard' ? 'class="selected" aria-current="page"' : '' ?> href="<?= e(url('/dashboard')) ?>"><span aria-hidden="true">▦</span> Dashboard</a>
         <a <?= $active === 'casos' ? 'class="selected" aria-current="page"' : '' ?> href="<?= e(url('/casos')) ?>"><span aria-hidden="true">▤</span> Casos de prueba</a>
+        <a <?= $active === 'formularios' ? 'class="selected" aria-current="page"' : '' ?> href="<?= e(url('/formularios')) ?>"><span aria-hidden="true">▥</span> Formularios</a>
         <a <?= $active === 'buscador' ? 'class="selected" aria-current="page"' : '' ?> href="<?= e(url('/')) ?>"><span aria-hidden="true">⌕</span> Buscador del proyecto</a>
     </nav>
     <?php if ($current && $current['rol'] === 'admin'): ?>
@@ -28,7 +29,7 @@ $active = $active ?? '';
         <a <?= $active === 'usuarios' ? 'class="selected" aria-current="page"' : '' ?> href="<?= e(url('/usuarios')) ?>"><span aria-hidden="true">♧</span> Usuarios</a>
     </nav>
     <?php endif; ?>
-    <div class="sidebar-note"><span class="tiny-label">PRIMER AVANCE</span><p>Registro de Caso de Prueba</p><span class="badge badge-success">Formulario disponible</span></div>
+    <div class="sidebar-note"><span class="tiny-label">GESTIÓN DE PRUEBAS</span><p>Casos y documentación de Caja Negra</p><span class="badge badge-success">4 de 10 disponibles</span></div>
     <?php if ($current): ?>
     <div class="profile"><span class="avatar"><?= e(mb_strtoupper(mb_substr($current['nombre'], 0, 1))) ?></span><div><strong><?= e($current['nombre']) ?></strong><small><?= $current['rol'] === 'admin' ? 'Administrador' : 'Tester' ?></small></div></div>
     <button class="logout" id="session-logout" type="button">Cerrar sesión <span aria-hidden="true">↗</span></button>
@@ -37,7 +38,7 @@ $active = $active ?? '';
     <?php endif; ?>
 </aside>
 <div class="workspace">
-    <header class="topbar"><button class="menu-toggle button-secondary" type="button" aria-controls="navegacion" aria-expanded="false">Menú</button><span>Ingeniería de Software Aplicada III</span><span class="topbar-tag">Primer avance</span></header>
+    <header class="topbar"><button class="menu-toggle button-secondary" type="button" aria-controls="navegacion" aria-expanded="false">Menú</button><span>Ingeniería de Software Aplicada III</span><span class="topbar-tag">Gestión de pruebas</span></header>
     <main id="contenido" class="main-content">
     <div id="session-message" class="alert alert-error" role="alert" hidden></div>
     <?php if (isset($_SESSION['flash'])): ?><div class="alert alert-success" role="status"><?= e($_SESSION['flash']) ?></div><?php unset($_SESSION['flash']); endif; ?>

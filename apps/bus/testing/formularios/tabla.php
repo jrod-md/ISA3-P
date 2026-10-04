@@ -1,0 +1,5 @@
+<?php use Marketplace\Bus\Repository\BlackBoxRepository; ?>
+<div class="table-scroll"><table><caption class="sr-only"><?= e($title) ?></caption>
+<?php if ($matrixType !== 'decision'): ?><thead><tr><?php foreach (BlackBoxRepository::FIELDS[$matrixType] as $label): ?><th><?= e($label) ?></th><?php endforeach; ?></tr></thead><tbody><?php foreach ($data['filas'] as $row): ?><tr><?php foreach (BlackBoxRepository::FIELDS[$matrixType] as $field => $label): ?><td class="wrap-cell"><?= nl2br(e($row[$field])) ?></td><?php endforeach; ?></tr><?php endforeach; ?></tbody>
+<?php else: ?><thead><tr><th>Condición / Acción</th><?php foreach ($data['reglas'] as $rule): ?><th><?= e($rule) ?></th><?php endforeach; ?></tr></thead><tbody><?php foreach (['condiciones' => 'Condición', 'acciones' => 'Acción'] as $kind => $label): ?><?php foreach ($data[$kind] as $element): ?><tr><td class="wrap-cell"><?= e($label . ': ' . $element['texto']) ?></td><?php foreach ($element['valores'] as $value): ?><td><?= $value === '-' ? '–' : e($value) ?></td><?php endforeach; ?></tr><?php endforeach; ?><?php endforeach; ?></tbody><?php endif; ?>
+</table></div>

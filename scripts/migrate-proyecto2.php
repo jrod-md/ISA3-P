@@ -8,6 +8,7 @@ use Marketplace\Shared\Support\Database;
 try {
     $pdo = Database::connect(Config::string('BUS_DB_NAME', 'bus_meta'));
     $pdo->exec(file_get_contents(PROJECT_ROOT . '/sql/proyecto2_migration.sql'));
+    $pdo->exec(file_get_contents(PROJECT_ROOT . '/sql/formularios_2_4_migration.sql'));
     $accounts = [
         [Config::string('ADMIN_USERNAME', 'admin'), 'Administrador', 'admin@isa3.local', Config::string('ADMIN_PASSWORD', 'demo-isa3-2026'), 'admin'],
         ['tester', 'Tester Demo', 'tester@isa3.local', 'Tester123!', 'tester'],

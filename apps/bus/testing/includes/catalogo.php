@@ -20,3 +20,4 @@ const FORMULARIOS = [
     'Tabla de Decisión', 'Cobertura de Caja Blanca', 'Plan de Pruebas del Proyecto',
     'Rúbrica de Evaluación', 'Autoevaluación y Coevaluación', 'Portafolio de Evidencias', 'Registro de Incidentes',
 ];
+const FORMULARIO_RUTAS = ['/casos', '/formularios/equivalencia', '/formularios/limites', '/formularios/decision'];

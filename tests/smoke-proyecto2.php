@@ -138,7 +138,7 @@ try {
     check($testers[0]->request('/usuarios')['status'] === 403, 'Tester no administra usuarios');
     check(!str_contains($testers[0]->request('/dashboard')['body'], '/usuarios'), 'Navegación de tester sin administración');
     $dashboard = $admin->request('/dashboard')['body'];
-    check(count(FORMULARIOS) === 10 && substr_count($dashboard, 'badge-pending">Pendiente') === 9, 'Dashboard muestra diez formularios y nueve pendientes');
+    check(count(FORMULARIOS) === 10 && substr_count($dashboard, 'badge-pending">Pendiente') === 6 && str_contains($dashboard, '4 de 10 disponibles'), 'Dashboard muestra cuatro formularios disponibles y seis pendientes');
     $token = $testers[0]->token('/casos/nuevo');
     $firstId = null;
     foreach (TECNICAS as $technique => $items) {

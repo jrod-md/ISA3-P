@@ -1,6 +1,6 @@
 # Evaluación y evidencias del proyecto · Formularios 7–9
 
-Accede desde **Formularios**. Son documentos a nivel proyecto, sin `caso_id`: no dependen de un caso ni se eliminan al borrar uno. El Formulario 10 permanece pendiente. Se conserva el único enlace Formularios en la navegación.
+Accede desde **Formularios**. Son documentos a nivel proyecto, sin `caso_id`: no dependen de un caso ni se eliminan al borrar uno. Los Formularios 1–10 están completos. Se conserva el único enlace Formularios en la navegación.
 
 | Formulario | Ruta | Propósito |
 | --- | --- | --- |

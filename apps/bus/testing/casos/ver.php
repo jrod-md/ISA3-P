@@ -13,4 +13,5 @@ $title = code_case((int) $case['id']); $active = 'casos'; require TESTING_PATH .
 <div class="associated-document"><strong><?= e(FORMULARIOS[$number - 1]) ?></strong><span class="badge <?= $associated ? 'badge-success' : 'badge-pending' ?>"><?= $associated ? '✓ Registrado' : 'Sin registro' ?></span><a class="text-link" href="<?= e(url('/formularios/' . $type . '/nuevo?caso_id=' . $case['id'])) ?>">Crear →</a>
 <?php foreach ($associated as $item): ?><a class="text-link" href="<?= e(url('/formularios/' . $type . '/ver?id=' . $item['id'])) ?>">Consultar #<?= (int) $item['id'] ?> · <?= e($item['autor']) ?></a><?php endforeach; ?></div>
 <?php endforeach; ?></section>
+<?php require TESTING_PATH . '/casos/incidentes_relacionados.php'; ?>
 <?php require TESTING_PATH . '/includes/footer.php'; ?>

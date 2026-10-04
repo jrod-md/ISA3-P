@@ -57,5 +57,5 @@ function errors_block(array $errors): void {
     echo '</ul></div>';
 }
 function delete_evidence(?string $file): void {
-    if ($file && basename($file) === $file && is_file(ROOT_PATH . '/.runtime/evidence/' . $file)) { unlink(ROOT_PATH . '/.runtime/evidence/' . $file); }
+    Marketplace\Bus\Support\PrivateEvidence::delete($file);
 }

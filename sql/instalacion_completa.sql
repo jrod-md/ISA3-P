@@ -363,3 +363,32 @@ CREATE TABLE IF NOT EXISTS portafolio_evidencias (
     CONSTRAINT fk_portafolio_evidencias_padre FOREIGN KEY (portafolio_id) REFERENCES portafolios(id) ON DELETE CASCADE,
     UNIQUE KEY uq_portafolio_evidencias_orden (portafolio_id, orden)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ADITIVA: registro académico de incidentes; conserva tablas y registros existentes.
+CREATE TABLE IF NOT EXISTS incidentes (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT UNSIGNED NOT NULL,
+    caso_id INT UNSIGNED DEFAULT NULL,
+    titulo VARCHAR(250) NOT NULL,
+    modulo VARCHAR(150) NOT NULL,
+    severidad ENUM('Crítica', 'Alta', 'Media', 'Baja') NOT NULL,
+    prioridad ENUM('Alta', 'Media', 'Baja') NOT NULL,
+    descripcion TEXT NOT NULL,
+    pasos_reproducir TEXT NOT NULL,
+    resultado_esperado TEXT NOT NULL,
+    resultado_obtenido TEXT NOT NULL,
+    evidencia_archivo VARCHAR(80) DEFAULT NULL,
+    evidencia_nombre VARCHAR(255) DEFAULT NULL,
+    evidencia_tipo VARCHAR(50) DEFAULT NULL,
+    evidencia_tamano INT UNSIGNED DEFAULT NULL,
+    estado ENUM('Abierto', 'En progreso', 'Cerrado') NOT NULL,
+    asignado_a VARCHAR(250) NOT NULL,
+    creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_incidente_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_incidente_caso FOREIGN KEY (caso_id) REFERENCES casos_prueba(id) ON DELETE SET NULL,
+    INDEX idx_incidente_usuario (usuario_id),
+    INDEX idx_incidente_caso (caso_id),
+    INDEX idx_incidente_estado (estado),
+    CONSTRAINT ck_incidente_tamano CHECK (evidencia_tamano IS NULL OR evidencia_tamano <= 2097152)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

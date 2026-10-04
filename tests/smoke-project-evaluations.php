@@ -58,7 +58,7 @@ try {
     $pdo->prepare('INSERT INTO usuarios (username,nombre,correo,password,rol) VALUES (?,?,?,?,?)')->execute([$nonce, 'Tester temporal', $nonce . '@isa3.local', password_hash('Temporal123!', PASSWORD_DEFAULT), 'tester']);
     $userId = (int) $pdo->lastInsertId(); $other->login($nonce, 'Temporal123!');
     foreach (['/dashboard', '/formularios'] as $route) {
-        $body = $tester->request($route)['body']; check(str_contains($body, '9 de 10 disponibles') && substr_count($body, '>Pendiente<') === 1, $route . ' nueve disponibles y solo 10 pendiente');
+        $body = $tester->request($route)['body']; check(str_contains($body, '10 de 10 disponibles') && substr_count($body, '>Pendiente<') === 0, $route . ' diez disponibles y ninguno pendiente');
         foreach (array_keys(Evaluation::TYPES) as $type) { check(str_contains($body, '/formularios/' . $type), 'Catálogo enlaza ' . $type); }
     }
     foreach (Evaluation::TYPES as $type => $definition) {

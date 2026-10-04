@@ -70,7 +70,7 @@ try {
     foreach ([$path, $path . '/nuevo', $path . '/ver?id=1', $path . '/editar?id=1'] as $route) { check($anon->request($route)['status'] === 302, 'Ruta protegida ' . $route); }
     foreach (['/dashboard','/formularios'] as $route) {
         $body = $tester->request($route)['body'];
-        check(str_contains($body, '9 de 10 disponibles') && substr_count($body, '>Pendiente<') === 1 && str_contains($body, $path), $route . ' muestra nueve formularios disponibles');
+        check(str_contains($body, '10 de 10 disponibles') && substr_count($body, '>Pendiente<') === 0 && str_contains($body, $path), $route . ' muestra diez formularios disponibles');
     }
     $editor = $tester->request($path . '/nuevo')['body'];
     check(!str_contains($editor, 'name="caso_id"') && str_contains($editor, 'NIVEL PROYECTO'), 'Editor de plan sin caso obligatorio');

@@ -9,15 +9,17 @@ Proyecto académico de Ingeniería de Software Aplicada III. Integra el **Market
 ## Funcionalidades
 
 - Búsqueda distribuida en Alpha, Beta y Gamma, con filtros, normalización de resultados, caché temporal y worker de caducidad.
-- Autenticación existente ampliada con roles Administrador y Tester, dashboard y Formularios 1–9.
+- Autenticación existente ampliada con roles Administrador y Tester, dashboard y Formularios 1–10.
 - Creación, consulta y edición de casos; eliminación reservada al Administrador. El Tester accede a sus propios casos.
 - Registro de técnica y subtécnica de Caja Negra/Caja Blanca, resultados Éxito/Fallo y evidencias privadas PNG, JPG o PDF de hasta 2 MB.
 
 Los Formularios 2–5 documentan actividades **asociadas a casos de prueba**: equivalencia, valores límite, decisiones y cobertura de Caja Blanca. En cobertura, el tester ingresa Total y Cubiertos y el sistema calcula el porcentaje; Herramienta Utilizada es texto libre y no existe importación automática desde herramientas externas.
 
-El **Formulario 6 es el Plan de Pruebas a nivel proyecto**, con versiones y cronograma de actividades; no depende de un caso individual. Su Responsable es independiente de la cuenta creadora. El Tester consulta y edita sus registros; el Administrador gestiona todos. El **Formulario 10 continúa pendiente**.
+El **Formulario 6 es el Plan de Pruebas a nivel proyecto**, con versiones y cronograma de actividades; no depende de un caso individual. Su Responsable es independiente de la cuenta creadora. El Tester consulta y edita sus registros; el Administrador gestiona todos. Los **Formularios 1–10 están completos**.
 
 Los **Formularios 7–9** son documentos de proyecto: rúbrica sumativa, autoevaluación/coevaluación formativa y portafolio de evidencias. Las puntuaciones las registra el usuario; el servidor calcula total y promedios. El portafolio organiza nombres/descripciones sin adjuntos. [Detalles y permisos](docs/evaluacion-evidencias.md).
+
+El **Formulario 10 registra incidentes del proyecto** con código BUG automático, caso opcional, filtros y captura/log privado de hasta 2 MB. Eliminar un caso conserva el incidente. [Gestión de defectos](docs/incidentes.md).
 
 ## Requisitos y tecnologías
 
@@ -57,7 +59,7 @@ Para detener únicamente los procesos propios:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\stop-dev.ps1
 ```
 
-La instalación utiliza los SQL originales y las migraciones aditivas de los Formularios 1–9. En una instalación existente también puedes ejecutar `php scripts/migrate-proyecto2.php`. No ejecutes `database/reset.sql` ni el seed original sobre datos que quieras conservar. Más detalles en [operación local](docs/entorno-xampp.md), [Caja Negra](docs/formularios-caja-negra.md), [cobertura](docs/formulario-cobertura.md) y [plan del proyecto](docs/plan-pruebas.md).
+La instalación utiliza los SQL originales y las migraciones aditivas de los Formularios 1–10. En una instalación existente también puedes ejecutar `php scripts/migrate-proyecto2.php`. No ejecutes `database/reset.sql` ni el seed original sobre datos que quieras conservar. Más detalles en [operación local](docs/entorno-xampp.md), [Caja Negra](docs/formularios-caja-negra.md), [cobertura](docs/formulario-cobertura.md) y [plan del proyecto](docs/plan-pruebas.md).
 
 ## Cuentas demo
 
@@ -78,10 +80,15 @@ Las cuentas se generan por seed/migración con contraseñas hash. `.env`, sesion
 & C:\xampp\php\php.exe .\tests\smoke-coverage.php http://localhost/ISA3-Proyecto2
 & C:\xampp\php\php.exe .\tests\smoke-test-plan.php http://localhost/ISA3-Proyecto2
 & C:\xampp\php\php.exe .\tests\smoke-project-evaluations.php http://localhost/ISA3-Proyecto2
+& C:\xampp\php\php.exe .\tests\smoke-incidents.php http://localhost/ISA3-Proyecto2
 ```
 
-GitHub Actions ejecuta sintaxis PHP, instalación/reimportación, ocho unitarias, 24 comprobaciones portables del Bus, 100 de Caja Negra, 87 de cobertura, 112 del Plan de Pruebas y 365 de evaluación/evidencias en Ubuntu con PHP 8.2 y MariaDB 10.11. Se activa en `push` y `pull_request`; no despliega.
+GitHub Actions ejecuta sintaxis PHP, instalación/reimportación, ocho unitarias, 24 comprobaciones portables del Bus, 100 de Caja Negra, 87 de cobertura, 112 del Plan de Pruebas y 365 de evaluación/evidencias y 255 de incidentes en Ubuntu con PHP 8.2 y MariaDB 10.11. Se activa en `push` y `pull_request`; no despliega.
 
 La suite QA completa se ejecuta localmente sobre Apache. El Bus portable se prueba con `php tests/smoke-bus.php`, con MySQL iniciado y los puertos del runtime libres. La prueba distribuida original `scripts/smoke-test.ps1` requiere Windows PowerShell 5.1; consulta [las instrucciones locales](docs/entorno-xampp.md).
+
+## Roadmap
+
+Formularios 1–10 completos. Integraciones con herramientas externas y automatización avanzada quedan como trabajo futuro.
 
 Licencia: [MIT](LICENSE).

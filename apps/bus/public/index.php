@@ -51,6 +51,12 @@ $testingRoutes = [
     '/casos/ver' => 'casos/ver.php', '/casos/editar' => 'casos/editar.php',
     '/casos/eliminar' => 'casos/eliminar.php', '/casos/evidencia' => 'casos/evidencia.php',
 ];
+if (preg_match('#^/formularios/incidentes(?:/(nuevo|ver|editar|eliminar|evidencia))?$#', $path, $matches)) {
+    $incidentAction = $matches[1] ?? 'listado';
+    $allowed = in_array($incidentAction, ['listado', 'ver', 'evidencia'], true) ? ['GET'] : ['GET', 'POST'];
+    if (!in_array($method, $allowed, true)) { http_response_code(405); header('Allow: ' . implode(', ', $allowed)); exit('Método no permitido'); }
+    require dirname(__DIR__) . '/testing/formularios/incidentes.php'; exit;
+}
 if (preg_match('#^/formularios/(rubrica|evaluacion|portafolio)(?:/(nuevo|ver|editar|eliminar))?$#', $path, $matches)) {
     if (!in_array($method, ['GET', 'POST'], true)) { http_response_code(405); header('Allow: GET, POST'); exit('Método no permitido'); }
     $evaluationType = $matches[1]; $evaluationAction = $matches[2] ?? 'listado';

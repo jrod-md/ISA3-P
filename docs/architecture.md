@@ -25,6 +25,8 @@ flowchart TD
     EP --> EA[evaluacion_aspectos: seis aspectos]
     Meta --> PF[portafolios]
     PF --> PE[portafolio_evidencias: filas ordenadas]
+    Meta --> I[incidentes: defectos y evidencia privada]
+    I -. caso opcional: SET NULL .-> C
     Meta --> S[search_sessions]
     Meta --> K[search_cache]
     Worker[Worker PHP de caducidad] --> Meta
@@ -38,8 +40,10 @@ El Proyecto 2 extiende el router, la autenticación y la navegación del Proyect
 
 Las bases se extienden mediante SQL aditivo. Los datos de casos no expiran con las búsquedas. Los Formularios 2–5 guardan documentación relacional vinculada al Formulario 1 y a su creador, con permisos comprobados por documento. El Formulario 5 calcula porcentajes a partir de conteos ingresados por el tester; no importa datos automáticamente de herramientas externas.
 
-El Formulario 6 utiliza `planes_prueba` y `plan_cronograma`: es un documento a nivel proyecto, sin `caso_id` ni vínculo con `formularios_prueba`. Conserva un creador y un Responsable académico por separado y permite varios planes/versiones. Se sirve desde `/formularios/plan`. El Formulario 10 continúa pendiente. Consulta [Caja Negra](formularios-caja-negra.md), [cobertura](formulario-cobertura.md) y [plan del proyecto](plan-pruebas.md); la documentación UML complementaria se encuentra en `docs/uml/`.
+El Formulario 6 utiliza `planes_prueba` y `plan_cronograma`: es un documento a nivel proyecto, sin `caso_id` ni vínculo con `formularios_prueba`. Conserva un creador y un Responsable académico por separado y permite varios planes/versiones. Se sirve desde `/formularios/plan`. Los Formularios 1–10 están completos. Consulta [Caja Negra](formularios-caja-negra.md), [cobertura](formulario-cobertura.md) y [plan del proyecto](plan-pruebas.md); la documentación UML complementaria se encuentra en `docs/uml/`.
 
 Los Formularios 7–9 guardan evaluaciones y evidencias en seis tablas independientes de los casos, con creador de sesión inmutable y permisos por documento. Totales y promedios se calculan en servidor a partir de puntuaciones registradas por el usuario. El portafolio organiza nombres/descripciones sin adjuntos. Consulta [evaluación y evidencias](evaluacion-evidencias.md).
+
+El Formulario 10 usa `incidentes`, con creador inmutable y caso opcional. La clave foránea SET NULL conserva el defecto al eliminar el caso. Los incidentes aparecen en una sección separada de su ficha, con permisos por incidente. `PrivateEvidence` comparte el almacenamiento/descarga privado con el Formulario 1 y admite TXT/LOG para incidentes; los archivos no se guardan en MySQL. Consulta [registro de incidentes](incidentes.md).
 
 Localmente XAMPP controla Apache y MySQL. Los scripts `start-dev.ps1` y `stop-dev.ps1` controlan exclusivamente PHP propio. CI usa MariaDB efímera y procesos PHP controlados por `tests/smoke-bus.php`, sin despliegue ni dependencia del entorno local.

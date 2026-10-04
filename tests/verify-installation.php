@@ -23,10 +23,10 @@ try {
         if ((int) $pdo->query('SELECT COUNT(*) FROM `' . $schemas[$name] . '`.products')->fetchColumn() !== $expected) { throw new RuntimeException('Catálogo incorrecto: ' . $name); }
     }
     $pdo->exec('USE `' . $schemas['bus_meta'] . '`');
-    foreach (['formularios_prueba', 'equivalencia_filas', 'limite_filas', 'decision_reglas', 'decision_elementos', 'decision_valores', 'cobertura_metricas', 'planes_prueba', 'plan_cronograma', 'rubricas', 'rubrica_criterios', 'evaluaciones_pares', 'evaluacion_aspectos', 'portafolios', 'portafolio_evidencias'] as $table) {
+    foreach (['formularios_prueba', 'equivalencia_filas', 'limite_filas', 'decision_reglas', 'decision_elementos', 'decision_valores', 'cobertura_metricas', 'planes_prueba', 'plan_cronograma', 'rubricas', 'rubrica_criterios', 'evaluaciones_pares', 'evaluacion_aspectos', 'portafolios', 'portafolio_evidencias', 'incidentes'] as $table) {
         $check = $pdo->prepare('SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name = ?');
         $check->execute([$schemas['bus_meta'], $table]);
-        if ((int) $check->fetchColumn() !== 1) { throw new RuntimeException('Falta tabla de Formularios 2–9: ' . $table); }
+        if ((int) $check->fetchColumn() !== 1) { throw new RuntimeException('Falta tabla de Formularios 2–10: ' . $table); }
     }
     if ((int) $pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn() !== 2 || (int) $pdo->query('SELECT COUNT(*) FROM casos_prueba')->fetchColumn() !== 0) { throw new RuntimeException('Instalación inicial incorrecta'); }
     foreach (['admin' => 'demo-isa3-2026', 'tester' => 'Tester123!'] as $username => $password) {
@@ -61,8 +61,13 @@ try {
         $repository->save(['id' => $testerId, 'rol' => 'tester'], $data);
         foreach ([$definition['table'], $definition['child']] as $table) { $evaluationBefore[$table] = $pdo->query('SELECT * FROM ' . $table . ' ORDER BY id')->fetchAll(); }
     }
+    $incidentRepository = new Marketplace\Bus\Repository\IncidentRepository($pdo);
+    $incidentId = $incidentRepository->save(['id' => $testerId, 'rol' => 'tester'], ['titulo' => 'Defecto de instalación', 'modulo' => 'Bus', 'severidad' => 'Media', 'prioridad' => 'Alta', 'descripcion' => 'Descripción', 'pasos_reproducir' => 'Buscar', 'resultado_esperado' => 'Respuesta', 'resultado_obtenido' => 'Error', 'estado' => 'Abierto', 'asignado_a' => 'Equipo Backend', 'caso_id' => $caseId]);
+    if (Marketplace\Bus\Repository\IncidentRepository::code($incidentId) !== 'BUG-001') { throw new RuntimeException('Código inicial incorrecto'); }
+    $incidentsBefore = $pdo->query('SELECT * FROM incidentes ORDER BY id')->fetchAll();
     $pdo->exec($sql);
     $pdo->exec('USE `' . $schemas['bus_meta'] . '`');
+    if ($pdo->query('SELECT * FROM incidentes ORDER BY id')->fetchAll() !== $incidentsBefore) { throw new RuntimeException('Reimportación alteró incidentes'); }
     if ((int) $pdo->query('SELECT COUNT(*) FROM equivalencia_filas WHERE formulario_id = ' . $documentId)->fetchColumn() !== 1) { throw new RuntimeException('Reimportación alteró documentación de Caja Negra'); }
     if ($pdo->query('SELECT * FROM cobertura_metricas ORDER BY id')->fetchAll() !== $coverageBefore) { throw new RuntimeException('Reimportación alteró métricas de Caja Blanca'); }
     if ($pdo->query('SELECT * FROM planes_prueba ORDER BY id')->fetchAll() !== $planBefore || $pdo->query('SELECT * FROM plan_cronograma ORDER BY id')->fetchAll() !== $scheduleBefore) { throw new RuntimeException('Reimportación alteró planes o cronograma'); }

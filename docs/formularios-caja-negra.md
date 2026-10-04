@@ -8,7 +8,7 @@ Desde **Formularios**, abre una técnica, elige **Nuevo registro** y selecciona 
 | 3 · Valor límite | `/formularios/limites` | Campo, rango válido, mínimo, máximo, valores límite y resultado esperado |
 | 4 · Decisión | `/formularios/decision` | Condiciones, acciones y reglas editables |
 
-Cada ruta ofrece `/nuevo`, `/ver?id=…`, `/editar?id=…` y `/eliminar?id=…`. El catálogo `/formularios` y el dashboard muestran nueve disponibles y solo el Formulario 10 pendiente, incluidos cobertura, Plan de Pruebas y evaluaciones/evidencias del proyecto. Las operaciones requieren la sesión existente; guardar y eliminar utilizan POST con CSRF.
+Cada ruta ofrece `/nuevo`, `/ver?id=…`, `/editar?id=…` y `/eliminar?id=…`. El catálogo `/formularios` y el dashboard muestran diez disponibles, incluidos cobertura, Plan de Pruebas y evaluaciones/evidencias del proyecto. Las operaciones requieren la sesión existente; guardar y eliminar utilizan POST con CSRF.
 
 Equivalencia y límites permiten agregar o quitar filas, conservando al menos una y hasta 30. Todos sus campos son obligatorios. En límites, si mínimo y máximo son numéricos, el mínimo no puede superar el máximo; también se admiten límites descriptivos o fechas.
 

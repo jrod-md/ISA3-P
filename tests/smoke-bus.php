@@ -139,6 +139,11 @@ try {
     if (!is_resource($evaluationTest)) { throw new RuntimeException('Cannot start project evaluation HTTP tests'); }
     fclose($evaluationPipes[0]);
     if (proc_close($evaluationTest) !== 0) { throw new RuntimeException('Project evaluation HTTP tests failed'); }
+    $incidentTest = proc_open([PHP_BINARY, PROJECT_ROOT . '/tests/smoke-incidents.php', 'http://127.0.0.1:8000'],
+        [0 => ['pipe', 'r'], 1 => STDOUT, 2 => STDERR], $incidentPipes, PROJECT_ROOT);
+    if (!is_resource($incidentTest)) { throw new RuntimeException('Cannot start incident HTTP tests'); }
+    fclose($incidentPipes[0]);
+    if (proc_close($incidentTest) !== 0) { throw new RuntimeException('Incident HTTP tests failed'); }
     $result = search('q=laptop&category=computers&max_price=900&provider=all&sort=price_asc');
     expect(count(array_filter($result['providers'], fn ($provider) => $provider['status'] === 'ok')) === 3 && $result['total'] > 0, 'All providers aggregated');
     expect(count(array_filter($result['results'], fn ($product) => isset($product['external_id'], $product['provider']))) === $result['total'], 'Normalized results');

@@ -1,0 +1,6 @@
+<?php
+use Marketplace\Bus\Repository\IncidentRepository as Incidents;
+$incidents = (new Incidents(db()))->listing($current, [], (int) $case['id']);
+?>
+<section class="panel detail-panel"><div class="section-heading"><div><h2>Incidentes relacionados</h2><p class="muted">Defectos del caso disponibles para tu cuenta.</p></div><a class="text-link" href="<?= e(url('/formularios/incidentes/nuevo?caso_id=' . $case['id'])) ?>">Registrar incidente desde este caso →</a></div>
+<?php if ($incidents): ?><div class="table-scroll"><table><caption class="sr-only">Defectos relacionados con <?= e(code_case((int) $case['id'])) ?></caption><thead><tr><th>Código</th><th>Título</th><th>Severidad</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><?php foreach ($incidents as $item): ?><tr><td><?= e(Incidents::code((int) $item['id'])) ?></td><td class="wrap-cell"><?= e($item['titulo']) ?></td><td><?= e($item['severidad']) ?></td><td><?= e($item['estado']) ?></td><td><a class="text-link" href="<?= e(url('/formularios/incidentes/ver?id=' . $item['id'])) ?>">Ver →</a></td></tr><?php endforeach; ?></tbody></table></div><?php else: ?><p class="muted">Sin incidentes registrados para tu cuenta en este caso.</p><?php endif; ?></section>

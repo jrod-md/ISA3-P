@@ -30,23 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $evidenceType = $case['evidencia_tipo'] ?? null;
     $evidenceFile = $case['evidencia_archivo'] ?? null;
     $remove = post_text('quitar_evidencia') === '1';
-    if ($uploaded && ($uploaded['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-        if (!is_int($uploaded['error']) || $uploaded['error'] !== UPLOAD_ERR_OK || !is_string($uploaded['tmp_name']) || !is_uploaded_file($uploaded['tmp_name'])) {
-            $errors[] = 'No se pudo subir la evidencia. Elige un archivo válido de hasta 2 MB.';
-        } elseif ($uploaded['size'] > 2 * 1024 * 1024) {
-            $errors[] = 'La evidencia debe pesar como máximo 2 MB.';
-        } else {
-            $mime = (new finfo(FILEINFO_MIME_TYPE))->file($uploaded['tmp_name']);
-            $types = ['image/png' => 'png', 'image/jpeg' => 'jpg', 'application/pdf' => 'pdf'];
-            if (!isset($types[$mime])) { $errors[] = 'La evidencia debe ser una imagen PNG, JPG o un documento PDF.'; }
-            elseif (!$errors) {
-                $directory = ROOT_PATH . '/.runtime/evidence';
-                if (!is_dir($directory)) { mkdir($directory, 0700, true); }
-                $newFile = bin2hex(random_bytes(20)) . '.' . $types[$mime];
-                if (!move_uploaded_file($uploaded['tmp_name'], $directory . '/' . $newFile)) { $errors[] = 'No se pudo guardar la evidencia. Revisa los permisos de la carpeta .runtime.'; $newFile = null; }
-                else { $evidenceFile = $newFile; $evidenceName = mb_substr(basename(str_replace('\\', '/', $uploaded['name'])), 0, 255); $evidenceType = $mime; }
-            }
-        }
+    if (!$errors) {
+        try {
+            $stored = Marketplace\Bus\Support\PrivateEvidence::store($uploaded);
+            if ($stored) { $newFile = $evidenceFile = $stored['evidencia_archivo']; $evidenceName = $stored['evidencia_nombre']; $evidenceType = $stored['evidencia_tipo']; }
+        } catch (InvalidArgumentException $error) { $errors[] = $error->getMessage(); }
     }
     if (!$errors) {
         if ($remove && !$newFile) { $evidenceFile = $evidenceName = $evidenceType = null; }

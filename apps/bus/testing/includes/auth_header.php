@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($title) ?> · ISA III</title>
-    <link rel="stylesheet" href="<?= e(url('/assets/testing.css')) ?>">
+    <link rel="stylesheet" href="<?= e(url('/assets/testing.css')) ?>?v=<?= (int) @filemtime(dirname(TESTING_PATH) . '/public/assets/testing.css') ?>">
 </head>
 <body class="auth-page">
 <main class="auth-shell">

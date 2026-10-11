@@ -44,3 +44,53 @@ document.getElementById('session-logout')?.addEventListener('click', async event
         button.disabled = false;
     }
 });
+
+// Pestañas de la ficha: sin JavaScript, las secciones se muestran una tras otra.
+for (const tabs of document.querySelectorAll('[data-tabs]')) {
+    const links = Array.from(tabs.querySelectorAll('a[href^="#"]'));
+    const panels = links.map(link => document.getElementById(link.hash.slice(1)));
+    const select = (hash, focus) => {
+        const index = Math.max(0, links.findIndex(link => link.hash === hash));
+        links.forEach((link, i) => {
+            link.setAttribute('aria-selected', String(i === index));
+            link.tabIndex = i === index ? 0 : -1;
+            panels[i].hidden = i !== index;
+        });
+        if (focus) links[index].focus();
+    };
+    tabs.setAttribute('role', 'tablist');
+    links.forEach((link, i) => {
+        link.setAttribute('role', 'tab');
+        link.setAttribute('aria-controls', panels[i].id);
+        panels[i].setAttribute('role', 'tabpanel');
+        link.addEventListener('click', event => {
+            event.preventDefault();
+            history.replaceState(null, '', link.hash);
+            select(link.hash, false);
+        });
+        link.addEventListener('keydown', event => {
+            if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+            const next = links[(i + (event.key === 'ArrowRight' ? 1 : links.length - 1)) % links.length];
+            history.replaceState(null, '', next.hash);
+            select(next.hash, true);
+        });
+    });
+    document.body.classList.add('tabs-ready');
+    select(location.hash, false);
+    // El ancla ya eligió la pestaña; evita dejar la página desplazada hasta el panel.
+    if (links.some(link => link.hash === location.hash)) window.scrollTo(0, 0);
+}
+
+// Estado real del Bus en la barra superior, leído de su /health.
+const health = document.getElementById('bus-health');
+if (health) {
+    const text = document.getElementById('bus-health-text');
+    fetch(window.marketplaceUrl('/health'), {headers: {Accept: 'application/json'}})
+        .then(response => response.ok ? response.json() : Promise.reject())
+        .then(data => {
+            const ok = data.status === 'ok';
+            health.dataset.state = ok ? 'ok' : 'down';
+            text.textContent = ok ? 'en línea' : 'con errores';
+        })
+        .catch(() => { health.dataset.state = 'down'; text.textContent = 'sin respuesta'; });
+}

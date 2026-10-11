@@ -3,7 +3,7 @@ require_once dirname(__DIR__) . '/testing/includes/bootstrap.php';
 $title = 'Buscador del proyecto'; $active = 'buscador'; $publicPage = true;
 require TESTING_PATH . '/includes/header.php';
 ?>
-<div class="page-heading"><div><span class="eyebrow">NUESTRO PROYECTO</span><h1>Marketplace Search Bus</h1><p class="muted">Busca productos en tres proveedores y documenta las pruebas del sistema.</p></div></div>
+<div class="page-heading"><div><span class="eyebrow">SISTEMA BAJO PRUEBA</span><h1>Marketplace Search Bus</h1><p class="muted">Busca productos en tres proveedores y documenta las pruebas del sistema.</p></div></div>
     <section class="panel search-panel" aria-labelledby="search-title">
         <div class="section-heading">
             <div>
@@ -68,7 +68,7 @@ require TESTING_PATH . '/includes/header.php';
         <div><span>Expira en</span><strong id="countdown">—</strong></div>
         <div><span>Resultados</span><strong id="result-count">0</strong></div>
         <div class="provider-statuses" id="provider-statuses"></div>
-        <?php if ($current): ?><div class="search-case-action"><a id="document-search" class="text-link" href="<?= e(url('/casos/nuevo')) ?>">Registrar un caso sobre esta búsqueda →</a></div><?php endif; ?>
+        <?php if ($current): ?><div class="search-case-action"><span class="muted">¿El resultado es el esperado? Documéntalo con los filtros y lo observado ya cargados.</span><a id="document-search" class="button" href="<?= e(url('/casos/nuevo')) ?>">Registrar un caso sobre esta búsqueda →</a></div><?php endif; ?>
     </section>
 
     <section aria-labelledby="results-title">
